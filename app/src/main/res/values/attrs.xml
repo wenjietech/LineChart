@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LineChart">
+        <attr name="bgColor" format="color"/>
+        <attr name="bgLeftColor" format="color"/>
+        <attr name="bgRightColor" format="color"/>
+        <attr name="bgTopColor" format="color"/>
+        <attr name="bgBottomColor" format="color"/>
+        <attr name="xTextColor" format="color"/>
+        <attr name="yTextColor" format="color"/>
+        <attr name="scaleColor" format="color"/>
+        <attr name="xLineColor" format="color"/>
+        <attr name="yLineColor" format="color"/>
+        <attr name="innerCircleColor" format="color"/>
+        <attr name="outCircleColor" format="color"/>
+        <attr name="chartLineColor" format="color"/>
+        <attr name="showGrid" format="boolean"/>
+        <attr name="gridColor" format="color"/>
+        <attr name="vCount" format="integer"/>
+        <attr name="hCount" format="integer"/>
+        <attr name="xMax" format="integer"/>
+        <attr name="xMin" format="integer"/>
+        <attr name="xTextSize" format="dimension"/>
+        <attr name="yTextSize" format="dimension"/>
+        <attr name="leftWith" format="dimension"/>
+        <attr name="rightWith" format="dimension"/>
+        <attr name="bottomWith" format="dimension"/>
+        <attr name="topWith" format="dimension"/>
+        <attr name="scaleLenth" format="dimension"/>
+        <attr name="innerCircleRadius" format="dimension"/>
+        <attr name="outCircleRadius" format="dimension"/>
+    </declare-styleable>
+
+</resources>

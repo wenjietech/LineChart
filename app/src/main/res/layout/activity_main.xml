@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:lineChart="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.conways.linechart.LineChart
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        lineChart:bgColor="#ffffffff"
+        lineChart:bgLeftColor="#ffffffff"
+        lineChart:bgRightColor="#ffffffff"
+        lineChart:bgTopColor="#ffffffff"
+        lineChart:bgBottomColor="#ffffffff"
+        lineChart:leftWith="32dp"
+        lineChart:bottomWith="16dp"
+        lineChart:rightWith="8dp"
+        lineChart:topWith="8dp"
+        lineChart:xLineColor="#ff000000"
+        lineChart:yLineColor="#ff000000"
+        lineChart:vCount="10"
+        lineChart:hCount="10"
+        lineChart:xMax="90"
+        lineChart:xMin="0"
+        lineChart:scaleLenth="4dp"
+        lineChart:scaleColor="#ff000000"
+        lineChart:xTextSize="12sp"
+        lineChart:showGrid="true"
+        lineChart:gridColor="#ffff0000"
+        lineChart:outCircleRadius="5dp"
+        lineChart:innerCircleRadius="4dp"
+        lineChart:outCircleColor="#ff00ff00"
+        android:id="@+id/lineChart"/>
+</FrameLayout>
