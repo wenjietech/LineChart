@@ -36,6 +36,8 @@ public class LineChart extends View {
 
     private int chartLineColor;
 
+    private int scaleNodeColor;
+
     private boolean showGrid;
     private int gridColor;
     private float scaleLenth;
@@ -56,6 +58,7 @@ public class LineChart extends View {
 
     private float innerCircleRadius;
     private float outCircleRadius;
+    private float scaleNodeRadius;
 
 
     private Paint bgPaint;
@@ -76,11 +79,15 @@ public class LineChart extends View {
 
     private Paint chartLinePaint;
 
+    private Paint scaleNodePaint;
+
+    private ScrollLisenter scrollLisenter;
+
 
     private int mWith;
     private int mHeight;
 
-    private int offSet;
+    private float offSet;
 
     private Rect xTextBounds;
 
@@ -137,6 +144,8 @@ public class LineChart extends View {
         innerCircleRadius = ta.getDimension(R.styleable.LineChart_innerCircleRadius, 2f);
         outCircleRadius = ta.getDimension(R.styleable.LineChart_outCircleRadius, 3f);
         chartLineColor = ta.getColor(R.styleable.LineChart_chartLineColor, 0xff000000);
+        scaleNodeColor = ta.getColor(R.styleable.LineChart_scaleNodeColor, 0xff000000);
+        scaleNodeRadius = ta.getDimension(R.styleable.LineChart_scaleNodeRadius, 3f);
         ta.recycle();
         initPaint();
 
@@ -195,6 +204,10 @@ public class LineChart extends View {
         chartLinePaint.setColor(chartLineColor);
         chartLinePaint.setAntiAlias(true);
 
+        scaleNodePaint = new Paint();
+        scaleNodePaint.setColor(scaleNodeColor);
+        scaleNodePaint.setAntiAlias(true);
+
         xTextBounds = new Rect();
     }
 
@@ -203,7 +216,6 @@ public class LineChart extends View {
         for (int i = 0; i < 20; i++) {
             ChartModel chartModel = new ChartModel();
             chartModel.setValue((int) (Math.random() * xMax - xMin));
-            Log.d(TAG, "initData: " + chartModel.getValue() + "  " + xMax);
             list.add(chartModel);
         }
     }
@@ -215,6 +227,10 @@ public class LineChart extends View {
         this.list.clear();
         this.list.addAll(list);
         invalidate();
+    }
+
+    public void setScrollLisenter(ScrollLisenter scrollLisenter) {
+        this.scrollLisenter = scrollLisenter;
     }
 
     @Override
@@ -283,12 +299,21 @@ public class LineChart extends View {
     private void drawContent(Canvas canvas) {
         float unitVLenth = (mHeight - topWith - bottomWith) / vCount;
         drawGrid(canvas, unitVLenth);
+        if (null == list || list.size() <= 0) {
+            return;
+        }
         float unitHLenth = (mWith - leftWith - rightWith) / hCount;
-        for (int i = 0; i < list.size(); i++) {
-            float x = offSet + (mWith - leftWith - rightWith) / 2 + leftWith - i * unitHLenth;
+        int firstPosition = 0;
+        float tempOffset = offSet + moveOffSet;
+        if (tempOffset > (mWith - leftWith - rightWith) / 2 + unitHLenth) {
+            firstPosition = (int) ((tempOffset - (mWith - leftWith - rightWith) / 2) / unitHLenth);
+        }
+        int lastPosition = firstPosition + hCount + 2 > list.size() ? list.size() : firstPosition + hCount + 2;
+        for (int i = firstPosition; i < lastPosition; i++) {
+            float x = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - i * unitHLenth;
             float y = mHeight - bottomWith - list.get(i).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
             if (i < list.size() - 1) {
-                float x1 = offSet + (mWith - leftWith - rightWith) / 2 + leftWith - (i + 1) * unitHLenth;
+                float x1 = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - (i + 1) * unitHLenth;
                 float y1 = mHeight - bottomWith - list.get(i + 1).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
                 canvas.drawLine(x, y, x1, y1, chartLinePaint);
             }
@@ -296,12 +321,21 @@ public class LineChart extends View {
             canvas.drawCircle(x, y, innerCircleRadius, innerCirclePaint);
         }
 
-        if (offSet > 0 || offSet < -(list.size() - 1) * unitHLenth) {
+        if ((offSet + moveOffSet) < 0 || (offSet + moveOffSet) > (list.size() - 1) * unitHLenth) {
             return;
         }
-        int position = (int) (Math.abs(offSet) / unitHLenth);
-
-
+        int position = (int) ((offSet + moveOffSet) / unitHLenth);
+        float x = (mWith - leftWith - rightWith) / 2 + leftWith;
+        float y;
+        float temp = (offSet + moveOffSet) % unitHLenth;
+        float y1 = mHeight - bottomWith - list.get(position).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
+        if ((offSet + moveOffSet) == (list.size() - 1) * unitHLenth) {
+            y = y1;
+        } else {
+            float y2 = mHeight - bottomWith - list.get(position + 1).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
+            y = y1 + temp * (y2 - y1) / unitHLenth;
+        }
+        canvas.drawCircle(x, y, scaleNodeRadius, scaleNodePaint);
     }
 
     private void drawGrid(Canvas canvas, float unitLenth) {
@@ -315,6 +349,7 @@ public class LineChart extends View {
     }
 
     private float xDown;
+    private float moveOffSet;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -323,17 +358,15 @@ public class LineChart extends View {
                 xDown = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
+                moveOffSet = event.getX() - xDown;
+                callBack();
+                invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                offSet += (int) (event.getX() - xDown);
-                xDown = 0f;
-                if (offSet < 0) {
-                    offSet = 0;
-                }
-                float unitHLenth = (mWith - leftWith - rightWith) / hCount;
-                if (offSet>(list.size()-1)*unitHLenth){
-                    offSet= (int) ((list.size()-1)*unitHLenth);
-                }
+                offSet += event.getX() - xDown;
+                resetData();
+                setToUnit();
+                callBack();
                 invalidate();
                 break;
             default:
@@ -341,6 +374,64 @@ public class LineChart extends View {
 
         }
         return true;
+    }
+
+
+    private int scrollPosition = -1;
+
+    private void callBack() {
+        if (null == scrollLisenter || null == list || list.size() <= 0) {
+            return;
+        }
+        float unitH = (mWith - leftWith - rightWith) / hCount;
+        int tempPosition;
+        if ((offSet + moveOffSet) >= (list.size() - 1) * unitH) {
+            tempPosition = list.size() - 1;
+        } else if ((offSet + moveOffSet) < 0) {
+            tempPosition = 0;
+        } else {
+            float offsetTemp = (offSet + moveOffSet) % unitH;
+            tempPosition = (int) ((offSet + moveOffSet) / unitH);
+            boolean next = offsetTemp > unitH / 2;
+
+//            Log.d(TAG, "offSet moveOffSet: "+(offSet + moveOffSet));
+//            Log.d(TAG, "offsetTemp: "+offsetTemp);
+//            Log.d(TAG, "unitH / 2: "+unitH / 2);
+            tempPosition = next ? tempPosition + 1 : tempPosition;
+        }
+
+        if (scrollPosition == tempPosition) {
+            return;
+        }
+        scrollPosition = tempPosition;
+        Log.d(TAG, "callBack: " + scrollPosition);
+        scrollLisenter.scroll(list.get(scrollPosition));
+
+
+    }
+
+
+    private void resetData() {
+        xDown = 0f;
+        moveOffSet = 0f;
+    }
+
+    private void setToUnit() {
+        if (offSet < 0) {
+            offSet = 0;
+            return;
+        }
+        float unitHLenth = (mWith - leftWith - rightWith) / hCount;
+        if (offSet > (list.size() - 1) * unitHLenth) {
+            offSet = (list.size() - 1) * unitHLenth;
+            return;
+        }
+
+        float temp = offSet % unitHLenth;
+        int positon = (int) (temp < unitHLenth / 2 ? offSet / unitHLenth : offSet / unitHLenth + 1);
+        offSet = unitHLenth * positon;
+
+
     }
 
 

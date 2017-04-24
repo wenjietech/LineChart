@@ -1,35 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:lineChart="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="18sp"
+        android:id="@+id/textView"/>
 
     <com.conways.linechart.LineChart
+
+        android:id="@+id/lineChart"
         android:layout_width="match_parent"
         android:layout_height="280dp"
+        lineChart:bgBottomColor="#ffffffff"
         lineChart:bgColor="#ffffffff"
         lineChart:bgLeftColor="#ffffffff"
         lineChart:bgRightColor="#ffffffff"
         lineChart:bgTopColor="#ffffffff"
-        lineChart:bgBottomColor="#ffffffff"
-        lineChart:leftWith="32dp"
         lineChart:bottomWith="16dp"
+        lineChart:gridColor="#22ff0000"
+        lineChart:hCount="16"
+        lineChart:innerCircleRadius="4dp"
+        lineChart:leftWith="32dp"
+        lineChart:outCircleColor="#ff00ff00"
+        lineChart:outCircleRadius="5dp"
         lineChart:rightWith="8dp"
+        lineChart:scaleColor="#ff000000"
+        lineChart:scaleLenth="4dp"
+        lineChart:scaleNodeColor="#ff00ff00"
+        lineChart:scaleNodeRadius="6dp"
+        lineChart:showGrid="true"
         lineChart:topWith="8dp"
-        lineChart:xLineColor="#ff000000"
-        lineChart:yLineColor="#ff000000"
         lineChart:vCount="10"
-        lineChart:hCount="10"
+        lineChart:xLineColor="#ff000000"
         lineChart:xMax="90"
         lineChart:xMin="0"
-        lineChart:scaleLenth="4dp"
-        lineChart:scaleColor="#ff000000"
         lineChart:xTextSize="12sp"
-        lineChart:showGrid="true"
-        lineChart:gridColor="#ffff0000"
-        lineChart:outCircleRadius="5dp"
-        lineChart:innerCircleRadius="4dp"
-        lineChart:outCircleColor="#ff00ff00"
-        android:id="@+id/lineChart"/>
-</FrameLayout>
+        lineChart:yLineColor="#ff000000"/>
+</LinearLayout>
