@@ -26,7 +26,11 @@ public class MainActivity extends AppCompatActivity implements ScrollLisenter {
             ChartModel chartModel = new ChartModel();
             chartModel.setIndex(String.valueOf(i));
             if (i % 2 == 0) {
-                chartModel.setValue(lineChart.getMax() / 5);
+                if(i == 2){
+                    chartModel.setValue(0);
+                }else {
+                    chartModel.setValue(lineChart.getMax() / 5);
+                }
             } else {
                 chartModel.setValue(lineChart.getMax() * 4 / 5);
             }

@@ -341,33 +341,29 @@ public class LineChart extends View {
 //        fillPath.reset();
 //        float maxY = 0;
 //        float[] first = new float[2];
+        ChartModel current, next;
         for (int i = firstPosition; i < lastPosition; i++) {
+            current = list.get(i);
             float x = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - i * unitHLenth;
-            float y = mHeight - bottomWith - list.get(i).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
-            if (i == firstPosition) {
-//                maxY = y;
-//                first[0] = x;
-//                first[1] = y;
-                path.moveTo(x, y);
-            }
+            float y = mHeight - bottomWith - current.getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
+//            if (i == firstPosition) {
+////                maxY = y;
+////                first[0] = x;
+////                first[1] = y;
+//            }
+            path.moveTo(x, y);
             if (i < list.size() - 1) {
-                float x1 = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - (i + 1) * unitHLenth;
-                float y1 = mHeight - bottomWith - list.get(i + 1).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
-//                canvas.drawLine(x, y, x1, y1, chartLinePaint);
-//                if (maxY < y1) {
-//                    maxY = y1;
-//                }
-                path.cubicTo(x1 + (x - x1) / 4, y, x - (x - x1) / 4, y1, x1, y1);
-//                if (i == list.size() - 2) {
-//                    fillPath.addPath(path);
-//                    fillPath.moveTo(x1, y1);
-//                    fillPath.lineTo(x1, maxY);
-//                    fillPath.lineTo(first[0], maxY);
-//                    fillPath.lineTo(first[0], first[1]);
-//                }
+                next = list.get(i + 1);
+                if(current.getValue() > 0 && next.getValue() > 0){
+                    float x1 = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - (i + 1) * unitHLenth;
+                    float y1 = mHeight - bottomWith - next.getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
+                    path.cubicTo(x1 + (x - x1) / 4, y, x - (x - x1) / 4, y1, x1, y1);
+                }
             }
-            canvas.drawCircle(x, y, outCircleRadius, outCirclePaint);
-            canvas.drawCircle(x, y, innerCircleRadius, innerCirclePaint);
+            if(current.getValue() > 0){
+                canvas.drawCircle(x, y, outCircleRadius, outCirclePaint);
+                canvas.drawCircle(x, y, innerCircleRadius, innerCirclePaint);
+            }
             String xText = list.get(i).getIndex();
             xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
             canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
@@ -379,6 +375,10 @@ public class LineChart extends View {
             return;
         }
         int position = (int) ((offSet + moveOffSet) / unitHLenth);
+
+        if(list.get(position).getValue() == 0){
+            return;
+        }
         float x = (mWith - leftWith - rightWith) / 2 + leftWith;
         float y;
         float temp = (offSet + moveOffSet) % unitHLenth;
