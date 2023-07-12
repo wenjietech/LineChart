@@ -24,8 +24,10 @@
         lineChart:bgLeftColor="#292929"
         lineChart:bgRightColor="#292929"
         lineChart:bgTopColor="#292929"
-        lineChart:bottomWith="16dp"
-        lineChart:chartLineColor="#FFEB3B"
+        lineChart:bottomWith="30dp"
+        lineChart:centerLineColor="#80ffffff"
+        lineChart:centerLineWidth="5dp"
+        lineChart:chartLineColor="#C4A9F5"
         lineChart:chartLineWidth="3dp"
         lineChart:gridColor="#80FFFFFF"
         lineChart:hCount="11"
@@ -38,15 +40,20 @@
         lineChart:scaleNodeColor="#FFFFFF"
         lineChart:scaleNodeRadius="6dp"
         lineChart:showGrid="true"
-        lineChart:topWith="0dp"
+        lineChart:topWith="20dp"
         lineChart:vCount="2"
         lineChart:xLineColor="#80FFFFFF"
         lineChart:xMax="100"
         lineChart:xMin="0"
-        lineChart:xTextColor="#ffffff"
-        lineChart:xTextSize="12sp"
+        lineChart:xTextColor="#FFFFFF"
+        lineChart:xTextSize="16sp"
         lineChart:yLineColor="#00FFFFFF"
-        lineChart:centerLineWidth="5dp"
-        lineChart:centerLineColor="#80ffffff"
         lineChart:yTextSize="12sp" />
+
+    <com.conways.linechart.CustomView
+        android:layout_width="match_parent"
+        android:layout_marginTop="50dp"
+        android:visibility="gone"
+        android:layout_height="300dp" />
+
 </LinearLayout>

@@ -21,25 +21,39 @@ public class MainActivity extends AppCompatActivity implements ScrollLisenter {
         lineChart.setScrollLisenter(this);
         tv = (TextView) this.findViewById(R.id.textView);
 
+        List<ChartModel> prefix = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            ChartModel chartModel = new ChartModel();
+            chartModel.setIndex(String.valueOf(i));
+            chartModel.setValue(0);
+            prefix.add(chartModel);
+        }
+
         List<ChartModel> list = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
             ChartModel chartModel = new ChartModel();
             chartModel.setIndex(String.valueOf(i));
             if (i % 2 == 0) {
-                if(i == 2){
+                if (i == 2) {
                     chartModel.setValue(0);
-                }else {
+                } else {
                     chartModel.setValue(lineChart.getMax() / 5);
                 }
             } else {
                 chartModel.setValue(lineChart.getMax() * 4 / 5);
             }
             list.add(chartModel);
-            /*ChartModel chartModel = new ChartModel();
-            chartModel.setValue((int) (Math.random() * xMax - xMin));
-            list.add(chartModel);*/
         }
-        lineChart.updateData(list);
+
+        List<ChartModel> suffix = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            ChartModel chartModel = new ChartModel();
+            chartModel.setIndex(String.valueOf(i));
+            chartModel.setValue(0);
+            suffix.add(chartModel);
+        }
+
+        lineChart.updateData(list, prefix, suffix);
     }
 
     @Override

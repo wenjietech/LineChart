@@ -5,9 +5,11 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -69,6 +71,8 @@ public class LineChart extends View {
     private Paint bgLeftPaint;
     private Paint bgRightPaint;
     private Paint bgTopPaint;
+    private Paint bgTopSelectedPaint;
+    private Path selectedLinePath = new Path();
     private Paint bgBottomPaint;
 
     private Paint xTextPaint;
@@ -91,18 +95,24 @@ public class LineChart extends View {
 
     private ScrollLisenter scrollLisenter;
     private Path path = new Path();
-//    private Path fillPath = new Path();
+    private Path fillPath = new Path();
+    private float unitHLenth;
 
     private int mWith;
     private int mHeight;
 
     private float offSet;
+    private float prefixOffSet;
 
     private Rect yTextBounds;
     private Rect xTextBounds;
 
     private List<ChartModel> list = new ArrayList<>();
+    private int prefixCount;
+    private int suffixCount;
     static String TAG = "zzzzzzz";
+
+    private LinearGradient linearGradient;
 
     public LineChart(Context context) {
         super(context);
@@ -176,11 +186,15 @@ public class LineChart extends View {
         bgTopPaint = new Paint();
         bgTopPaint.setColor(bgTopColor);
 
+        bgTopSelectedPaint = new Paint();
+//        bgTopSelectedPaint.setColor(Color.WHITE);
+//        bgTopSelectedPaint.setStyle(Paint.Style.STROKE);
+//        bgTopSelectedPaint.setStrokeWidth(dip2px(2));
+
         bgBottomPaint = new Paint();
         bgBottomPaint.setColor(bgBottomColor);
 
         xTextPaint = new Paint();
-        xTextPaint.setColor(xTextColor);
         xTextPaint.setTextSize(xTextSize);
         xTextPaint.setAntiAlias(true);
 
@@ -225,7 +239,7 @@ public class LineChart extends View {
         chartLinePaint.setStyle(Paint.Style.STROKE);
 
         chartLineFillPaint = new Paint();
-        chartLineFillPaint.setColor(Color.GRAY);
+//        chartLineFillPaint.setColor(Color.GRAY);
         chartLineFillPaint.setStyle(Paint.Style.FILL);
         chartLineFillPaint.setAntiAlias(true);
 
@@ -238,9 +252,13 @@ public class LineChart extends View {
         xTextBounds = new Rect();
     }
 
-    public void updateData(List<ChartModel> datas) {
+    public void updateData(List<ChartModel> datas, List<ChartModel> prefixList, List<ChartModel> suffixList) {
         list.clear();
+        list.addAll(prefixList);
         list.addAll(datas);
+        list.addAll(suffixList);
+        prefixCount = prefixList.size();
+        suffixCount = suffixList.size();
         postInvalidate();
     }
 
@@ -256,36 +274,23 @@ public class LineChart extends View {
         this.scrollLisenter = scrollLisenter;
     }
 
-    /*@Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthMeasureMode = MeasureSpec.getMode(widthMeasureSpec);
-        int heightMeasureMode = MeasureSpec.getMode(heightMeasureSpec);
-        if (widthMeasureMode == MeasureSpec.EXACTLY) {
-            mWith = MeasureSpec.getSize(widthMeasureSpec);
-        } else {
-            mWith = 500;
-        }
-        if (heightMeasureMode == MeasureSpec.EXACTLY) {
-            mHeight = MeasureSpec.getSize(heightMeasureSpec);
-        } else {
-            mHeight = 800;
-        }
-        setMeasuredDimension(mWith, mHeight);
-    }*/
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        linearGradient = new LinearGradient(0, 0, 0, h, Color.parseColor("#FF673AB7"), Color.TRANSPARENT, Shader.TileMode.CLAMP);
         mWith = w;
         mHeight = h;
+        unitHLenth = (mWith - leftWith - rightWith) / hCount;
+        prefixOffSet = prefixCount * unitHLenth;
+        offSet = prefixOffSet;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBg(canvas);
-        drawTop(canvas);
         drawBottom(canvas);
         drawContent(canvas);
+        drawTop(canvas);
         drawRight(canvas);
         drawLeft(canvas);
     }
@@ -297,6 +302,18 @@ public class LineChart extends View {
 
     private void drawTop(Canvas canvas) {
         canvas.drawRect(0, 0, mWith, topWith, bgTopPaint);
+        selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
+        selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
+        selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(mWith / 2f + 2* unitHLenth, topWith);
+        bgTopSelectedPaint.setStyle(Paint.Style.FILL);
+        bgTopSelectedPaint.setColor(bgTopColor);
+        canvas.drawPath(selectedLinePath, bgTopSelectedPaint);
+        bgTopSelectedPaint.setStyle(Paint.Style.STROKE);
+        bgTopSelectedPaint.setColor(Color.WHITE);
+        bgTopSelectedPaint.setStrokeWidth(dip2px(2));
+        canvas.drawPath(selectedLinePath, bgTopSelectedPaint);
     }
 
     private void drawRight(Canvas canvas) {
@@ -333,50 +350,54 @@ public class LineChart extends View {
         float unitHLenth = (mWith - leftWith - rightWith) / hCount;
         int firstPosition = 0;
         float tempOffset = offSet + moveOffSet;
+        Log.d(TAG, "tempOffset=" + tempOffset);
         if (tempOffset > (mWith - leftWith - rightWith) / 2 + unitHLenth) {
             firstPosition = (int) ((tempOffset - (mWith - leftWith - rightWith) / 2) / unitHLenth);
         }
+        Log.d(TAG, "firstPosition=" + firstPosition);
         int lastPosition = Math.min(firstPosition + hCount + 2, list.size());
-        path.reset();
-//        fillPath.reset();
-//        float maxY = 0;
-//        float[] first = new float[2];
         ChartModel current, next;
         for (int i = firstPosition; i < lastPosition; i++) {
             current = list.get(i);
+            Log.d(TAG, "current=" + current.getValue());
             float x = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - i * unitHLenth;
             float y = mHeight - bottomWith - current.getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
-//            if (i == firstPosition) {
-////                maxY = y;
-////                first[0] = x;
-////                first[1] = y;
-//            }
+            path.reset();
+            fillPath.reset();
             path.moveTo(x, y);
             if (i < list.size() - 1) {
                 next = list.get(i + 1);
-                if(current.getValue() > 0 && next.getValue() > 0){
+                if (current.getValue() > 0 && next.getValue() > 0) {
                     float x1 = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - (i + 1) * unitHLenth;
                     float y1 = mHeight - bottomWith - next.getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
                     path.cubicTo(x1 + (x - x1) / 4, y, x - (x - x1) / 4, y1, x1, y1);
+                    fillPath.addPath(path);
+                    //draw fill first
+                    fillPath.lineTo(x1, mHeight - bottomWith);
+                    fillPath.lineTo(x, mHeight - bottomWith);
+                    chartLineFillPaint.setShader(linearGradient);
+                    canvas.drawPath(fillPath, chartLineFillPaint);
+                    //draw chart line second, need to cover fill color
+                    canvas.drawPath(path, chartLinePaint);
                 }
             }
-            if(current.getValue() > 0){
+            if (current.getValue() > 0) {
                 canvas.drawCircle(x, y, outCircleRadius, outCirclePaint);
                 canvas.drawCircle(x, y, innerCircleRadius, innerCirclePaint);
             }
             String xText = list.get(i).getIndex();
             xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
+            xTextPaint.setColor(xTextColor & 0x80ffffff);
             canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
             canvas.drawLine(x, topWith, x, mHeight - bottomWith, gridPaint);
         }
-        canvas.drawPath(path, chartLinePaint);
 //        canvas.drawPath(fillPath, chartLineFillPaint);
         if ((offSet + moveOffSet) < 0 || (offSet + moveOffSet) > (list.size() - 1) * unitHLenth) {
             return;
         }
         int position = (int) ((offSet + moveOffSet) / unitHLenth);
 
-        if(list.get(position).getValue() == 0){
+        if (list.get(position).getValue() == 0) {
             return;
         }
         float x = (mWith - leftWith - rightWith) / 2 + leftWith;
@@ -391,6 +412,12 @@ public class LineChart extends View {
             y = y1 + temp * (y2 - y1) / unitHLenth;
         }
         canvas.drawCircle(x, y, scaleNodeRadius, scaleNodePaint);
+        if (moveOffSet == 0) {
+            String xText = list.get(position).getIndex();
+            xTextPaint.setColor(xTextColor);
+            xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
+            canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+        }
     }
 
     private void drawGrid(Canvas canvas, float unitLenth) {
@@ -480,13 +507,12 @@ public class LineChart extends View {
     }
 
     private void setToUnit() {
-        if (offSet < 0) {
-            offSet = 0;
+        if (offSet < prefixOffSet) {
+            offSet = prefixOffSet;
             return;
         }
-        float unitHLenth = (mWith - leftWith - rightWith) / hCount;
-        if (offSet > (list.size() - 1) * unitHLenth) {
-            offSet = (list.size() - 1) * unitHLenth;
+        if (offSet > (list.size() - 1 - suffixCount) * unitHLenth) {
+            offSet = (list.size() - 1 - suffixCount) * unitHLenth;
             return;
         }
 
