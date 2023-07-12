@@ -15,7 +15,6 @@
         android:textSize="18sp" />
 
     <com.conways.linechart.LineChart
-
         android:id="@+id/lineChart"
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -50,6 +49,44 @@
         lineChart:yLineColor="#00FFFFFF"
         lineChart:fillColorStart="#FF673AB7"
         lineChart:fillColorEnd="#00673AB7"
+        lineChart:yTextSize="12sp" />
+
+
+    <com.conways.linechart.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
+        lineChart:bgBottomColor="#292929"
+        lineChart:bgColor="#292929"
+        lineChart:bgLeftColor="#292929"
+        lineChart:bgRightColor="#292929"
+        lineChart:bgTopColor="#292929"
+        lineChart:bottomWith="30dp"
+        lineChart:centerLineColor="#80ffffff"
+        lineChart:centerLineWidth="5dp"
+        lineChart:chartLineColor="#C4A9F5"
+        lineChart:chartLineWidth="3dp"
+        lineChart:gridColor="#80FFFFFF"
+        lineChart:hCount="11"
+        lineChart:innerCircleColor="#ffffff"
+        lineChart:innerCircleRadius="4dp"
+        lineChart:leftWith="0dp"
+        lineChart:rightWith="0dp"
+        lineChart:scaleColor="#ff000000"
+        lineChart:scaleNodeColor="#FFFFFF"
+        lineChart:scaleNodeRadius="6dp"
+        lineChart:showGrid="true"
+        lineChart:topWith="20dp"
+        lineChart:vCount="2"
+        lineChart:xLineColor="#80FFFFFF"
+        lineChart:xMax="100"
+        lineChart:xMin="0"
+        lineChart:xTextColor="#FFFFFF"
+        lineChart:xTextSize="16sp"
+        lineChart:yLineColor="#00FFFFFF"
+        lineChart:lineNormalColor="#7B63A7"
+        lineChart:lineSelectColor="#B18DF2"
         lineChart:yTextSize="12sp" />
 
     <com.conways.linechart.CustomView

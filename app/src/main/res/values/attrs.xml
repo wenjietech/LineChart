@@ -1,42 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr name="bgColor" format="color"/>
+    <attr name="bgLeftColor" format="color"/>
+    <attr name="bgRightColor" format="color"/>
+    <attr name="bgTopColor" format="color"/>
+    <attr name="bgBottomColor" format="color"/>
+    <attr name="xTextColor" format="color"/>
+    <attr name="yTextColor" format="color"/>
+    <attr name="scaleColor" format="color"/>
+    <attr name="xLineColor" format="color"/>
+    <attr name="yLineColor" format="color"/>
+    <attr name="innerCircleColor" format="color"/>
+    <attr name="outCircleColor" format="color"/>
+    <attr name="chartLineColor" format="color"/>
+    <attr name="chartLineWidth" format="dimension"/>
+    <attr name="scaleNodeColor" format="color"/>
+    <attr name="showGrid" format="boolean"/>
+    <attr name="gridColor" format="color"/>
+    <attr name="vCount" format="integer"/>
+    <attr name="hCount" format="integer"/>
+    <attr name="xMax" format="integer"/>
+    <attr name="xMin" format="integer"/>
+    <attr name="xTextSize" format="dimension"/>
+    <attr name="yTextSize" format="dimension"/>
+    <attr name="leftWith" format="dimension"/>
+    <attr name="rightWith" format="dimension"/>
+    <attr name="bottomWith" format="dimension"/>
+    <attr name="topWith" format="dimension"/>
+    <attr name="scaleLenth" format="dimension"/>
+    <attr name="innerCircleRadius" format="dimension"/>
+    <attr name="outCircleRadius" format="dimension"/>
+    <attr name="scaleNodeRadius" format="dimension"/>
+    <attr name="centerLineWidth" format="dimension"/>
+    <attr name="centerLineColor" format="color"/>
+
     <declare-styleable name="LineChart">
-        <attr name="bgColor" format="color"/>
-        <attr name="bgLeftColor" format="color"/>
-        <attr name="bgRightColor" format="color"/>
-        <attr name="bgTopColor" format="color"/>
-        <attr name="bgBottomColor" format="color"/>
-        <attr name="xTextColor" format="color"/>
-        <attr name="yTextColor" format="color"/>
-        <attr name="scaleColor" format="color"/>
-        <attr name="xLineColor" format="color"/>
-        <attr name="yLineColor" format="color"/>
-        <attr name="innerCircleColor" format="color"/>
-        <attr name="outCircleColor" format="color"/>
-        <attr name="chartLineColor" format="color"/>
-        <attr name="chartLineWidth" format="dimension"/>
-        <attr name="scaleNodeColor" format="color"/>
-        <attr name="showGrid" format="boolean"/>
-        <attr name="gridColor" format="color"/>
-        <attr name="vCount" format="integer"/>
-        <attr name="hCount" format="integer"/>
-        <attr name="xMax" format="integer"/>
-        <attr name="xMin" format="integer"/>
-        <attr name="xTextSize" format="dimension"/>
-        <attr name="yTextSize" format="dimension"/>
-        <attr name="leftWith" format="dimension"/>
-        <attr name="rightWith" format="dimension"/>
-        <attr name="bottomWith" format="dimension"/>
-        <attr name="topWith" format="dimension"/>
-        <attr name="scaleLenth" format="dimension"/>
-        <attr name="innerCircleRadius" format="dimension"/>
-        <attr name="outCircleRadius" format="dimension"/>
-        <attr name="scaleNodeRadius" format="dimension"/>
-        <attr name="centerLineWidth" format="dimension"/>
-        <attr name="centerLineColor" format="color"/>
+        <attr name="bgColor"/>
+        <attr name="bgLeftColor"/>
+        <attr name="bgRightColor"/>
+        <attr name="bgTopColor" />
+        <attr name="bgBottomColor" />
+        <attr name="xTextColor" />
+        <attr name="yTextColor" />
+        <attr name="scaleColor" />
+        <attr name="xLineColor" />
+        <attr name="yLineColor" />
+        <attr name="innerCircleColor" />
+        <attr name="outCircleColor" />
+        <attr name="chartLineColor" />
+        <attr name="chartLineWidth" />
+        <attr name="scaleNodeColor" />
+        <attr name="showGrid" />
+        <attr name="gridColor" />
+        <attr name="vCount" />
+        <attr name="hCount" />
+        <attr name="xMax" />
+        <attr name="xMin" />
+        <attr name="xTextSize" />
+        <attr name="yTextSize" />
+        <attr name="leftWith" />
+        <attr name="rightWith" />
+        <attr name="bottomWith" />
+        <attr name="topWith" />
+        <attr name="scaleLenth" />
+        <attr name="innerCircleRadius" />
+        <attr name="outCircleRadius" />
+        <attr name="scaleNodeRadius" />
+        <attr name="centerLineWidth" />
+        <attr name="centerLineColor" />
         <attr name="fillColorStart" format="color"/>
         <attr name="fillColorEnd" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="BarChart">
+        <attr name="bgColor"/>
+        <attr name="bgLeftColor"/>
+        <attr name="bgRightColor"/>
+        <attr name="bgTopColor" />
+        <attr name="bgBottomColor" />
+        <attr name="xTextColor" />
+        <attr name="yTextColor" />
+        <attr name="scaleColor" />
+        <attr name="xLineColor" />
+        <attr name="yLineColor" />
+        <attr name="innerCircleColor" />
+        <attr name="outCircleColor" />
+        <attr name="chartLineColor" />
+        <attr name="chartLineWidth" />
+        <attr name="scaleNodeColor" />
+        <attr name="showGrid" />
+        <attr name="gridColor" />
+        <attr name="vCount" />
+        <attr name="hCount" />
+        <attr name="xMax" />
+        <attr name="xMin" />
+        <attr name="xTextSize" />
+        <attr name="yTextSize" />
+        <attr name="leftWith" />
+        <attr name="rightWith" />
+        <attr name="bottomWith" />
+        <attr name="topWith" />
+        <attr name="centerLineWidth" />
+        <attr name="centerLineColor" />
+        <attr name="lineNormalColor" format="color" />
+        <attr name="lineSelectColor" format="color"/>
     </declare-styleable>
 
 </resources>

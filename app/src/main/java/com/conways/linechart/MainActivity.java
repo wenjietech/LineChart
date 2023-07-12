@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements ScrollListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         LineChart lineChart = (LineChart) this.findViewById(R.id.lineChart);
+        BarChart barChart = (BarChart) this.findViewById(R.id.barChart);
         lineChart.setScrollListener(this);
         tv = (TextView) this.findViewById(R.id.textView);
 
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements ScrollListener {
         }
 
         lineChart.updateData(list, prefix, suffix);
+        barChart.updateData(list, prefix, suffix);
     }
 
     @Override
