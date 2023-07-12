@@ -1,48 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:lineChart="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
-        android:text="TextView"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_gravity="center_horizontal"
-        android:textSize="18sp"
-        android:id="@+id/textView"/>
+        android:layout_marginTop="32dp"
+        android:text="TextView"
+        android:textSize="18sp" />
 
     <com.conways.linechart.LineChart
 
         android:id="@+id/lineChart"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
-        lineChart:bgBottomColor="#ffffffff"
-        lineChart:bgColor="#ffffffff"
-        lineChart:bgLeftColor="#ffffffff"
-        lineChart:bgRightColor="#ffffffff"
-        lineChart:bgTopColor="#ffffffff"
+        android:layout_height="150dp"
+        lineChart:bgBottomColor="#292929"
+        lineChart:bgColor="#292929"
+        lineChart:bgLeftColor="#292929"
+        lineChart:bgRightColor="#292929"
+        lineChart:bgTopColor="#292929"
         lineChart:bottomWith="16dp"
-        lineChart:gridColor="#22ff0000"
-        lineChart:hCount="16"
+        lineChart:chartLineColor="#FFEB3B"
+        lineChart:chartLineWidth="3dp"
+        lineChart:gridColor="#80FFFFFF"
+        lineChart:hCount="11"
+        lineChart:innerCircleColor="#ffffff"
         lineChart:innerCircleRadius="4dp"
-        lineChart:leftWith="32dp"
-        lineChart:outCircleColor="#ff00ff00"
-        lineChart:outCircleRadius="5dp"
-        lineChart:rightWith="8dp"
+        lineChart:leftWith="0dp"
+        lineChart:rightWith="0dp"
         lineChart:scaleColor="#ff000000"
         lineChart:scaleLenth="4dp"
-        lineChart:scaleNodeColor="#ff00ff00"
+        lineChart:scaleNodeColor="#FFFFFF"
         lineChart:scaleNodeRadius="6dp"
         lineChart:showGrid="true"
         lineChart:topWith="8dp"
-        lineChart:vCount="10"
-        lineChart:xLineColor="#ff000000"
-        lineChart:xMax="90"
+        lineChart:vCount="2"
+        lineChart:xLineColor="#80FFFFFF"
+        lineChart:xMax="100"
         lineChart:xMin="0"
         lineChart:xTextSize="12sp"
-        lineChart:yLineColor="#ff000000"/>
+        lineChart:yLineColor="#00FFFFFF"
+        lineChart:yTextSize="12sp" />
 </LinearLayout>
