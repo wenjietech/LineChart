@@ -78,6 +78,8 @@ public class LineChart extends View {
     private Paint yLinePaint;
     private Paint gridPaint;
     private Paint centerLinePaint;
+    private int centerLineColor;
+    private float centerLineWidth;
 
     private Paint innerCirclePaint;
     private Paint outCirclePaint;
@@ -99,25 +101,25 @@ public class LineChart extends View {
     private Rect yTextBounds;
     private Rect xTextBounds;
 
-    private List<ChartModel> list;
+    private List<ChartModel> list = new ArrayList<>();
     static String TAG = "zzzzzzz";
 
     public LineChart(Context context) {
         super(context);
         initPaint();
-        initData();
+//        updateData();
     }
 
     public LineChart(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
-        initData();
+//        updateData();
     }
 
     public LineChart(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
-        initData();
+//        updateData();
     }
 
 
@@ -154,6 +156,8 @@ public class LineChart extends View {
         chartLineWidth = ta.getDimension(R.styleable.LineChart_chartLineWidth, 10f);
         scaleNodeColor = ta.getColor(R.styleable.LineChart_scaleNodeColor, 0xff000000);
         scaleNodeRadius = ta.getDimension(R.styleable.LineChart_scaleNodeRadius, 3f);
+        centerLineWidth = ta.getDimension(R.styleable.LineChart_centerLineWidth, 10f);
+        centerLineColor = ta.getColor(R.styleable.LineChart_centerLineColor, 0xff000000);
         ta.recycle();
         initPaint();
 
@@ -191,20 +195,20 @@ public class LineChart extends View {
 
         xLinePaint = new Paint();
         xLinePaint.setColor(xLineColor);
-        xLinePaint.setStrokeWidth(dip2px(1));
+//        xLinePaint.setStrokeWidth(dip2px(1));
 
         yLinePaint = new Paint();
         yLinePaint.setColor(yLineColor);
-        yLinePaint.setStrokeWidth(dip2px(1f));
+//        yLinePaint.setStrokeWidth(dip2px(1f));
 
         gridPaint = new Paint();
         gridPaint.setColor(gridColor);
 
         centerLinePaint = new Paint();
-        centerLinePaint.setColor(Color.WHITE);
-        centerLinePaint.setStrokeWidth(10f);
+        centerLinePaint.setColor(centerLineColor);
+        centerLinePaint.setStrokeWidth(centerLineWidth);
         centerLinePaint.setStyle(Paint.Style.STROKE);
-        centerLinePaint.setPathEffect(new DashPathEffect(new float[]{5, 5}, 0));
+        centerLinePaint.setPathEffect(new DashPathEffect(new float[]{5, 10}, 0));
 
         innerCirclePaint = new Paint();
         innerCirclePaint.setColor(innerCircleColor);
@@ -234,30 +238,18 @@ public class LineChart extends View {
         xTextBounds = new Rect();
     }
 
-    private void initData() {
-        list = new ArrayList<>();
-        for (int i = 0; i < 14; i++) {
-            ChartModel chartModel = new ChartModel();
-            chartModel.setIndex(String.valueOf(i));
-            if (i % 2 == 0) {
-                chartModel.setValue(xMax / 5);
-            } else {
-                chartModel.setValue(xMax * 4 / 5);
-            }
-            list.add(chartModel);
-            /*ChartModel chartModel = new ChartModel();
-            chartModel.setValue((int) (Math.random() * xMax - xMin));
-            list.add(chartModel);*/
-        }
+    public void updateData(List<ChartModel> datas) {
+        list.clear();
+        list.addAll(datas);
+        postInvalidate();
     }
 
-    public void setList(List<ChartModel> list) {
-        if (null == this.list) {
-            list = new ArrayList<>();
-        }
-        this.list.clear();
-        this.list.addAll(list);
-        invalidate();
+    public int getMax() {
+        return xMax;
+    }
+
+    public void setMax(int xMax) {
+        this.xMax = xMax;
     }
 
     public void setScrollLisenter(ScrollLisenter scrollLisenter) {

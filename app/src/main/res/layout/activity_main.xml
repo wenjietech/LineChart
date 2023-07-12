@@ -38,12 +38,15 @@
         lineChart:scaleNodeColor="#FFFFFF"
         lineChart:scaleNodeRadius="6dp"
         lineChart:showGrid="true"
-        lineChart:topWith="8dp"
+        lineChart:topWith="0dp"
         lineChart:vCount="2"
         lineChart:xLineColor="#80FFFFFF"
         lineChart:xMax="100"
         lineChart:xMin="0"
+        lineChart:xTextColor="#ffffff"
         lineChart:xTextSize="12sp"
         lineChart:yLineColor="#00FFFFFF"
+        lineChart:centerLineWidth="5dp"
+        lineChart:centerLineColor="#80ffffff"
         lineChart:yTextSize="12sp" />
 </LinearLayout>
