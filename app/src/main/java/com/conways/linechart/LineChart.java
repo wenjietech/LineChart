@@ -11,7 +11,6 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -83,6 +82,8 @@ public class LineChart extends View {
     private Paint gridPaint;
     private Paint centerLinePaint;
     private int centerLineColor;
+    private int fillColorStart;
+    private int fillColorEnd;
     private float centerLineWidth;
 
     private Paint innerCirclePaint;
@@ -93,7 +94,7 @@ public class LineChart extends View {
 
     private Paint scaleNodePaint;
 
-    private ScrollLisenter scrollLisenter;
+    private ScrollListener scrollLisenter;
     private Path path = new Path();
     private Path fillPath = new Path();
     private float unitHLenth;
@@ -110,7 +111,6 @@ public class LineChart extends View {
     private List<ChartModel> list = new ArrayList<>();
     private int prefixCount;
     private int suffixCount;
-    static String TAG = "zzzzzzz";
 
     private LinearGradient linearGradient;
 
@@ -168,6 +168,8 @@ public class LineChart extends View {
         scaleNodeRadius = ta.getDimension(R.styleable.LineChart_scaleNodeRadius, 3f);
         centerLineWidth = ta.getDimension(R.styleable.LineChart_centerLineWidth, 10f);
         centerLineColor = ta.getColor(R.styleable.LineChart_centerLineColor, 0xff000000);
+        fillColorStart = ta.getColor(R.styleable.LineChart_fillColorStart, 0x80ffffff);
+        fillColorEnd = ta.getColor(R.styleable.LineChart_fillColorEnd, 0x00000000);
         ta.recycle();
         initPaint();
 
@@ -252,6 +254,12 @@ public class LineChart extends View {
         xTextBounds = new Rect();
     }
 
+    /**
+     * set data points
+     * @param datas  real data point
+     * @param prefixList placeholder before real data point
+     * @param suffixList placeholder after real data point
+     */
     public void updateData(List<ChartModel> datas, List<ChartModel> prefixList, List<ChartModel> suffixList) {
         list.clear();
         list.addAll(prefixList);
@@ -270,13 +278,13 @@ public class LineChart extends View {
         this.xMax = xMax;
     }
 
-    public void setScrollLisenter(ScrollLisenter scrollLisenter) {
-        this.scrollLisenter = scrollLisenter;
+    public void setScrollListener(ScrollListener listener) {
+        this.scrollLisenter = listener;
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        linearGradient = new LinearGradient(0, 0, 0, h, Color.parseColor("#FF673AB7"), Color.TRANSPARENT, Shader.TileMode.CLAMP);
+        linearGradient = new LinearGradient(0, 0, 0, h, fillColorStart, fillColorEnd, Shader.TileMode.CLAMP);
         mWith = w;
         mHeight = h;
         unitHLenth = (mWith - leftWith - rightWith) / hCount;
@@ -350,16 +358,13 @@ public class LineChart extends View {
         float unitHLenth = (mWith - leftWith - rightWith) / hCount;
         int firstPosition = 0;
         float tempOffset = offSet + moveOffSet;
-        Log.d(TAG, "tempOffset=" + tempOffset);
         if (tempOffset > (mWith - leftWith - rightWith) / 2 + unitHLenth) {
             firstPosition = (int) ((tempOffset - (mWith - leftWith - rightWith) / 2) / unitHLenth);
         }
-        Log.d(TAG, "firstPosition=" + firstPosition);
         int lastPosition = Math.min(firstPosition + hCount + 2, list.size());
         ChartModel current, next;
         for (int i = firstPosition; i < lastPosition; i++) {
             current = list.get(i);
-            Log.d(TAG, "current=" + current.getValue());
             float x = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - i * unitHLenth;
             float y = mHeight - bottomWith - current.getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
             path.reset();
@@ -481,22 +486,12 @@ public class LineChart extends View {
             tempPosition = 0;
         } else {
             tempPosition = (int) ((offSet + moveOffSet) / unitH);
-
-//            float offsetTemp = (offSet + moveOffSet) % unitH;
-//            tempPosition = (int) ((offSet + moveOffSet) / unitH);
-//            boolean next = offsetTemp > unitH / 2;
-
-//            Log.d(TAG, "offSet moveOffSet: "+(offSet + moveOffSet));
-//            Log.d(TAG, "offsetTemp: "+offsetTemp);
-//            Log.d(TAG, "unitH / 2: "+unitH / 2);
-//            tempPosition = next ? tempPosition + 1 : tempPosition;
         }
 
         if (scrollPosition == tempPosition) {
             return;
         }
         scrollPosition = tempPosition;
-        Log.d(TAG, "callBack: " + scrollPosition);
         scrollLisenter.scroll(list.get(scrollPosition));
     }
 

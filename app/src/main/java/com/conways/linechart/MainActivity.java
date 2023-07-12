@@ -2,13 +2,12 @@ package com.conways.linechart;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ScrollLisenter {
+public class MainActivity extends AppCompatActivity implements ScrollListener {
 
     private String TAG = "zzzzz";
     private TextView tv;
@@ -18,7 +17,7 @@ public class MainActivity extends AppCompatActivity implements ScrollLisenter {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         LineChart lineChart = (LineChart) this.findViewById(R.id.lineChart);
-        lineChart.setScrollLisenter(this);
+        lineChart.setScrollListener(this);
         tv = (TextView) this.findViewById(R.id.textView);
 
         List<ChartModel> prefix = new ArrayList<>();

@@ -35,6 +35,8 @@
         <attr name="scaleNodeRadius" format="dimension"/>
         <attr name="centerLineWidth" format="dimension"/>
         <attr name="centerLineColor" format="color"/>
+        <attr name="fillColorStart" format="color"/>
+        <attr name="fillColorEnd" format="color"/>
     </declare-styleable>
 
 </resources>

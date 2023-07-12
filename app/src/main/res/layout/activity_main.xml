@@ -48,6 +48,8 @@
         lineChart:xTextColor="#FFFFFF"
         lineChart:xTextSize="16sp"
         lineChart:yLineColor="#00FFFFFF"
+        lineChart:fillColorStart="#FF673AB7"
+        lineChart:fillColorEnd="#00673AB7"
         lineChart:yTextSize="12sp" />
 
     <com.conways.linechart.CustomView

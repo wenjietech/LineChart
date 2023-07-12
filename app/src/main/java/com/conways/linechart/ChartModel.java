@@ -5,7 +5,13 @@ package com.conways.linechart;
  */
 
 public class ChartModel {
+    /**
+     * y-axis value
+     */
     private int value;
+    /**
+     * x-axis display text
+     */
     private String index;
 
     public int getValue() {
