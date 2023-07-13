@@ -394,6 +394,7 @@ public class BarChart extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                getParent().requestDisallowInterceptTouchEvent(true);
                 xDown = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:

@@ -470,6 +470,7 @@ public class LineChart extends View {
         }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                getParent().requestDisallowInterceptTouchEvent(true);
 //                scaleNodePaint.setColor(Color.TRANSPARENT);
                 xDown = event.getX();
                 break;
