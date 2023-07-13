@@ -245,6 +245,12 @@ public class BarChart extends View {
         unitHLenth = (mWith - leftWith - rightWith) / hCount;
         prefixOffSet = prefixCount * unitHLenth;
         offSet = prefixOffSet;
+
+        selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
+        selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
+        selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(mWith / 2f + 2* unitHLenth, topWith);
     }
 
     @Override
@@ -265,11 +271,6 @@ public class BarChart extends View {
 
     private void drawTop(Canvas canvas) {
         canvas.drawRect(0, 0, mWith, topWith, bgTopPaint);
-        selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
-        selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f);
-        selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f + 2 * unitHLenth, topWith);
         bgTopSelectedPaint.setStyle(Paint.Style.FILL);
         bgTopSelectedPaint.setColor(bgTopColor);
         canvas.drawPath(selectedLinePath, bgTopSelectedPaint);
@@ -317,7 +318,7 @@ public class BarChart extends View {
             firstPosition = (int) ((tempOffset - (mWith - leftWith - rightWith) / 2) / unitHLenth);
         }
         int lastPosition = Math.min(firstPosition + hCount + 2, list.size());
-        ChartModel current, next;
+        ChartModel current;
         for (int i = firstPosition; i < lastPosition; i++) {
             current = list.get(i);
             float x = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - i * unitHLenth;
@@ -338,7 +339,7 @@ public class BarChart extends View {
         if ((offSet + moveOffSet) < 0 || (offSet + moveOffSet) > (list.size() - 1) * unitHLenth) {
             return;
         }
-        int position = (int) ((offSet + moveOffSet) / unitHLenth);
+        int position = Math.round((offSet + moveOffSet) / unitHLenth);
 
         if (list.get(position).getValue() == 0) {
             return;

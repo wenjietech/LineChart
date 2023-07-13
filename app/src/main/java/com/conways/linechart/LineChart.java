@@ -296,6 +296,12 @@ public class LineChart extends View {
         unitHLenth = (mWith - leftWith - rightWith) / hCount;
         prefixOffSet = prefixCount * unitHLenth;
         offSet = prefixOffSet;
+
+        selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
+        selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
+        selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(mWith / 2f + 2* unitHLenth, topWith);
     }
 
     @Override
@@ -317,11 +323,11 @@ public class LineChart extends View {
     private void drawTop(Canvas canvas) {
         canvas.drawRect(0, 0, mWith, topWith, bgTopPaint);
         if(showSelectedIndicator){
-            selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
-            selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
-            selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
-            selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
-            selectedLinePath.lineTo(mWith / 2f + 2* unitHLenth, topWith);
+//            selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
+//            selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
+//            selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
+//            selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
+//            selectedLinePath.lineTo(mWith / 2f + 2* unitHLenth, topWith);
             bgTopSelectedPaint.setStyle(Paint.Style.FILL);
             bgTopSelectedPaint.setColor(bgTopColor);
             canvas.drawPath(selectedLinePath, bgTopSelectedPaint);
@@ -412,7 +418,8 @@ public class LineChart extends View {
         if ((offSet + moveOffSet) < 0 || (offSet + moveOffSet) > (list.size() - 1) * unitHLenth) {
             return;
         }
-        int position = (int) ((offSet + moveOffSet) / unitHLenth);
+        //round
+        int position = Math.round((offSet + moveOffSet) / unitHLenth);
 
         if (list.get(position).getValue() == 0) {
             return;
@@ -424,11 +431,11 @@ public class LineChart extends View {
         float y1 = mHeight - bottomWith - list.get(position).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
         if (moveOffSet == 0 || (offSet + moveOffSet) == (list.size() - 1) * unitHLenth) {
             y = y1;
-        } else {
+            canvas.drawCircle(x, y, scaleNodeRadius, scaleNodePaint);
+        } /*else {
             float y2 = mHeight - bottomWith - list.get(position + 1).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
             y = y1 + temp * (y2 - y1) / unitHLenth;
-        }
-        canvas.drawCircle(x, y, scaleNodeRadius, scaleNodePaint);
+        }*/
         if (moveOffSet == 0 && showXAxis) {
             String xText = list.get(position).getIndex();
             xTextPaint.setColor(xTextColor);
@@ -463,7 +470,7 @@ public class LineChart extends View {
         }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                scaleNodePaint.setColor(Color.TRANSPARENT);
+//                scaleNodePaint.setColor(Color.TRANSPARENT);
                 xDown = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -472,7 +479,7 @@ public class LineChart extends View {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                scaleNodePaint.setColor(scaleNodeColor);
+//                scaleNodePaint.setColor(scaleNodeColor);
                 offSet += event.getX() - xDown;
                 resetData();
                 setToUnit();
@@ -521,8 +528,8 @@ public class LineChart extends View {
             offSet = prefixOffSet;
             return;
         }
-        if (offSet > (list.size() - 1 - suffixCount) * unitHLenth) {
-            offSet = (list.size() - 1 - suffixCount) * unitHLenth;
+        if (offSet > (list.size() - suffixCount - 1) * unitHLenth) {
+            offSet = (list.size() - suffixCount - 1) * unitHLenth;
             return;
         }
 
