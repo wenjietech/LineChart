@@ -111,6 +111,9 @@ public class LineChart extends View {
     private List<ChartModel> list = new ArrayList<>();
     private int prefixCount;
     private int suffixCount;
+    private boolean canScroll = true;
+    private boolean showXAxis = true;
+    private boolean showSelectedIndicator = true;
 
     private LinearGradient linearGradient;
 
@@ -170,6 +173,9 @@ public class LineChart extends View {
         centerLineColor = ta.getColor(R.styleable.LineChart_centerLineColor, 0xff000000);
         fillColorStart = ta.getColor(R.styleable.LineChart_fillColorStart, 0x80ffffff);
         fillColorEnd = ta.getColor(R.styleable.LineChart_fillColorEnd, 0x00000000);
+        canScroll = ta.getBoolean(R.styleable.LineChart_canScroll, true);
+        showXAxis = ta.getBoolean(R.styleable.LineChart_showXAxis, true);
+        showSelectedIndicator = ta.getBoolean(R.styleable.LineChart_showSelectedIndicator, true);
         ta.recycle();
         initPaint();
 
@@ -310,18 +316,20 @@ public class LineChart extends View {
 
     private void drawTop(Canvas canvas) {
         canvas.drawRect(0, 0, mWith, topWith, bgTopPaint);
-        selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
-        selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
-        selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f + 2* unitHLenth, topWith);
-        bgTopSelectedPaint.setStyle(Paint.Style.FILL);
-        bgTopSelectedPaint.setColor(bgTopColor);
-        canvas.drawPath(selectedLinePath, bgTopSelectedPaint);
-        bgTopSelectedPaint.setStyle(Paint.Style.STROKE);
-        bgTopSelectedPaint.setColor(Color.WHITE);
-        bgTopSelectedPaint.setStrokeWidth(dip2px(2));
-        canvas.drawPath(selectedLinePath, bgTopSelectedPaint);
+        if(showSelectedIndicator){
+            selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
+            selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
+            selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
+            selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
+            selectedLinePath.lineTo(mWith / 2f + 2* unitHLenth, topWith);
+            bgTopSelectedPaint.setStyle(Paint.Style.FILL);
+            bgTopSelectedPaint.setColor(bgTopColor);
+            canvas.drawPath(selectedLinePath, bgTopSelectedPaint);
+            bgTopSelectedPaint.setStyle(Paint.Style.STROKE);
+            bgTopSelectedPaint.setColor(Color.WHITE);
+            bgTopSelectedPaint.setStrokeWidth(dip2px(2));
+            canvas.drawPath(selectedLinePath, bgTopSelectedPaint);
+        }
     }
 
     private void drawRight(Canvas canvas) {
@@ -330,8 +338,10 @@ public class LineChart extends View {
 
     private void drawBottom(Canvas canvas) {
         canvas.drawRect(0, mHeight - bottomWith, mWith, mHeight, bgBottomPaint);
-        canvas.drawLine(leftWith, mHeight - bottomWith, mWith - rightWith, mHeight - bottomWith,
-                xLinePaint);
+        if(showXAxis){
+            canvas.drawLine(leftWith, mHeight - bottomWith, mWith - rightWith, mHeight - bottomWith,
+                    xLinePaint);
+        }
     }
 
 
@@ -390,10 +400,12 @@ public class LineChart extends View {
                 canvas.drawCircle(x, y, outCircleRadius, outCirclePaint);
                 canvas.drawCircle(x, y, innerCircleRadius, innerCirclePaint);
             }
-            String xText = list.get(i).getIndex();
-            xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
-            xTextPaint.setColor(xTextColor & 0x80ffffff);
-            canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+            if(showXAxis){
+                String xText = list.get(i).getIndex();
+                xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
+                xTextPaint.setColor(xTextColor & 0x80ffffff);
+                canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+            }
             canvas.drawLine(x, topWith, x, mHeight - bottomWith, gridPaint);
         }
 //        canvas.drawPath(fillPath, chartLineFillPaint);
@@ -417,7 +429,7 @@ public class LineChart extends View {
             y = y1 + temp * (y2 - y1) / unitHLenth;
         }
         canvas.drawCircle(x, y, scaleNodeRadius, scaleNodePaint);
-        if (moveOffSet == 0) {
+        if (moveOffSet == 0 && showXAxis) {
             String xText = list.get(position).getIndex();
             xTextPaint.setColor(xTextColor);
             xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
@@ -446,6 +458,9 @@ public class LineChart extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if(!canScroll){
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 scaleNodePaint.setColor(Color.TRANSPARENT);

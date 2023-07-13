@@ -34,6 +34,9 @@
     <attr name="scaleNodeRadius" format="dimension"/>
     <attr name="centerLineWidth" format="dimension"/>
     <attr name="centerLineColor" format="color"/>
+    <attr name="canScroll" format="boolean"/>
+    <attr name="showXAxis" format="boolean"/>
+    <attr name="showSelectedIndicator" format="boolean"/>
 
     <declare-styleable name="LineChart">
         <attr name="bgColor"/>
@@ -71,6 +74,9 @@
         <attr name="centerLineColor" />
         <attr name="fillColorStart" format="color"/>
         <attr name="fillColorEnd" format="color"/>
+        <attr name="canScroll"/>
+        <attr name="showXAxis"/>
+        <attr name="showSelectedIndicator"/>
     </declare-styleable>
 
     <declare-styleable name="BarChart">
