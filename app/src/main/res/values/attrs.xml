@@ -113,4 +113,36 @@
         <attr name="lineSelectColor" format="color"/>
     </declare-styleable>
 
+    <declare-styleable name="CandleChart">
+        <attr name="bgColor"/>
+        <attr name="bgLeftColor"/>
+        <attr name="bgRightColor"/>
+        <attr name="bgTopColor" />
+        <attr name="bgBottomColor" />
+        <attr name="xTextColor" />
+        <attr name="yTextColor" />
+        <attr name="scaleColor" />
+        <attr name="xLineColor" />
+        <attr name="yLineColor" />
+        <attr name="innerCircleColor" />
+        <attr name="outCircleColor" />
+        <attr name="chartLineColor" />
+        <attr name="chartLineWidth" />
+        <attr name="scaleNodeColor" />
+        <attr name="showGrid" />
+        <attr name="gridColor" />
+        <attr name="vCount" />
+        <attr name="hCount" />
+        <attr name="xMax" />
+        <attr name="xMin" />
+        <attr name="xTextSize" />
+        <attr name="yTextSize" />
+        <attr name="leftWith" />
+        <attr name="rightWith" />
+        <attr name="bottomWith" />
+        <attr name="topWith" />
+        <attr name="centerLineWidth" />
+        <attr name="centerLineColor" />
+    </declare-styleable>
+
 </resources>

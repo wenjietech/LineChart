@@ -14,6 +14,7 @@ public class ChartModel {
      */
     private String index;
 
+
     public int getValue() {
         return value;
     }
@@ -29,4 +30,6 @@ public class ChartModel {
     public void setIndex(String index) {
         this.index = index;
     }
+
+
 }

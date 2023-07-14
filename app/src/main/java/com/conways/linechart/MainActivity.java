@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements ScrollListener {
         LineChart lineChart = (LineChart) this.findViewById(R.id.lineChart);
         BarChart barChart = (BarChart) this.findViewById(R.id.barChart);
         LineChart lineChart2 = (LineChart) this.findViewById(R.id.lineChart2);
+        CandleChart candleChart = (CandleChart) this.findViewById(R.id.candleChart);
         lineChart.setScrollListener(this);
         tv = (TextView) this.findViewById(R.id.textView);
 
@@ -57,6 +58,25 @@ public class MainActivity extends AppCompatActivity implements ScrollListener {
         lineChart.updateData(list, prefix, suffix);
         barChart.updateData(list, prefix, suffix);
         lineChart2.updateData(list, prefix, suffix);
+
+        List<CandleChartModel> candleChartModelList = new ArrayList<>();
+        for (int i = 0; i < 288; i++) {
+            CandleChartModel chartModel = new CandleChartModel();
+            chartModel.setIndex(String.valueOf(i));
+            /*if (i % 5 == 0) {
+                chartModel.setLength((int) (candleChart.getMax() * 0.1));
+            } else if (i % 4 == 0) {
+                chartModel.setLength((int) (candleChart.getMax() * 0.2));
+            } else if (i % 3 == 0) {
+                chartModel.setLength((int) (candleChart.getMax() * 0.3));
+            } else if (i % 2 == 0) {
+                chartModel.setLength((int) (candleChart.getMax() * 0.4));
+            }*/
+            chartModel.setLength((int) (candleChart.getMax() * 0.4));
+            candleChartModelList.add(chartModel);
+        }
+
+        candleChart.updateData(candleChartModelList);
     }
 
     @Override
