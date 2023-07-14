@@ -60,7 +60,12 @@ public class MainActivity extends AppCompatActivity implements ScrollListener {
     }
 
     @Override
-    public void scroll(ChartModel chartModel) {
+    public void onPositionSelected(int position, ChartModel chartModel) {
         tv.setText(chartModel.getValue() + "");
+    }
+
+    @Override
+    public void onScroll(float offset) {
+
     }
 }

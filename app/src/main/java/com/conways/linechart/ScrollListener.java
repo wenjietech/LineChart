@@ -6,5 +6,8 @@ package com.conways.linechart;
 
 public interface ScrollListener {
 
-    public void scroll(ChartModel chartModel);
+    void onPositionSelected(int position, ChartModel chartModel);
+
+    void onScroll(float offset);
+
 }

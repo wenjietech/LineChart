@@ -76,7 +76,7 @@ public class BarChart extends View {
 
     private Paint chartLinePaint;
     private RectF rectF;
-    private ScrollListener scrollLisenter;
+    private ScrollListener scrollListener;
     //    private Path path = new Path();
 //    private Path fillPath = new Path();
     private float unitHLenth;
@@ -235,7 +235,7 @@ public class BarChart extends View {
     }
 
     public void setScrollListener(ScrollListener listener) {
-        this.scrollLisenter = listener;
+        this.scrollListener = listener;
     }
 
     @Override
@@ -400,6 +400,9 @@ public class BarChart extends View {
             case MotionEvent.ACTION_MOVE:
                 moveOffSet = event.getX() - xDown;
 //                callBack();
+                if (scrollListener != null) {
+                    scrollListener.onScroll(moveOffSet);
+                }
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
@@ -420,7 +423,7 @@ public class BarChart extends View {
     private int scrollPosition = -1;
 
     private void callBack() {
-        if (null == scrollLisenter || null == list || list.size() <= 0) {
+        if (null == scrollListener || null == list || list.size() <= 0) {
             return;
         }
         float unitH = (mWith - leftWith - rightWith) / hCount;
@@ -437,7 +440,7 @@ public class BarChart extends View {
             return;
         }
         scrollPosition = tempPosition;
-        scrollLisenter.scroll(list.get(scrollPosition));
+        scrollListener.onPositionSelected(scrollPosition, list.get(scrollPosition));
     }
 
 

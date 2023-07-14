@@ -94,7 +94,7 @@ public class LineChart extends View {
 
     private Paint scaleNodePaint;
 
-    private ScrollListener scrollLisenter;
+    private ScrollListener scrollListener;
     private Path path = new Path();
     private Path fillPath = new Path();
     private float unitHLenth;
@@ -262,7 +262,8 @@ public class LineChart extends View {
 
     /**
      * set data points
-     * @param datas  real data point
+     *
+     * @param datas      real data point
      * @param prefixList placeholder before real data point
      * @param suffixList placeholder after real data point
      */
@@ -285,7 +286,7 @@ public class LineChart extends View {
     }
 
     public void setScrollListener(ScrollListener listener) {
-        this.scrollLisenter = listener;
+        this.scrollListener = listener;
     }
 
     @Override
@@ -299,9 +300,9 @@ public class LineChart extends View {
 
         selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
         selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
+        selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f);
         selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f + 2* unitHLenth, topWith);
+        selectedLinePath.lineTo(mWith / 2f + 2 * unitHLenth, topWith);
     }
 
     @Override
@@ -322,7 +323,7 @@ public class LineChart extends View {
 
     private void drawTop(Canvas canvas) {
         canvas.drawRect(0, 0, mWith, topWith, bgTopPaint);
-        if(showSelectedIndicator){
+        if (showSelectedIndicator) {
 //            selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
 //            selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
 //            selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
@@ -344,7 +345,7 @@ public class LineChart extends View {
 
     private void drawBottom(Canvas canvas) {
         canvas.drawRect(0, mHeight - bottomWith, mWith, mHeight, bgBottomPaint);
-        if(showXAxis){
+        if (showXAxis) {
             canvas.drawLine(leftWith, mHeight - bottomWith, mWith - rightWith, mHeight - bottomWith,
                     xLinePaint);
         }
@@ -406,7 +407,7 @@ public class LineChart extends View {
                 canvas.drawCircle(x, y, outCircleRadius, outCirclePaint);
                 canvas.drawCircle(x, y, innerCircleRadius, innerCirclePaint);
             }
-            if(showXAxis){
+            if (showXAxis) {
                 String xText = list.get(i).getIndex();
                 xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
                 xTextPaint.setColor(xTextColor & 0x80ffffff);
@@ -465,7 +466,7 @@ public class LineChart extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(!canScroll){
+        if (!canScroll) {
             return false;
         }
         switch (event.getAction()) {
@@ -476,6 +477,9 @@ public class LineChart extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveOffSet = event.getX() - xDown;
+                if (scrollListener != null) {
+                    scrollListener.onScroll(moveOffSet);
+                }
 //                callBack();
                 invalidate();
                 break;
@@ -498,7 +502,7 @@ public class LineChart extends View {
     private int scrollPosition = -1;
 
     private void callBack() {
-        if (null == scrollLisenter || null == list || list.size() <= 0) {
+        if (null == scrollListener || null == list || list.size() <= 0) {
             return;
         }
         float unitH = (mWith - leftWith - rightWith) / hCount;
@@ -515,7 +519,7 @@ public class LineChart extends View {
             return;
         }
         scrollPosition = tempPosition;
-        scrollLisenter.scroll(list.get(scrollPosition));
+        scrollListener.onPositionSelected(scrollPosition, list.get(scrollPosition));
     }
 
 
