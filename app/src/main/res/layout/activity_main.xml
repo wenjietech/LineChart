@@ -23,9 +23,9 @@
             android:id="@+id/lineChart"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:visibility="gone"
+            android:visibility="visible"
             lineChart:bgBottomColor="#292929"
-            lineChart:bgColor="#7A7977"
+            lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"
             lineChart:bgRightColor="#292929"
             lineChart:bgTopColor="#292929"
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
-            android:visibility="gone"
+            android:visibility="visible"
             lineChart:bgBottomColor="#292929"
             lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"
@@ -102,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
-            android:visibility="gone"
+            android:visibility="visible"
             lineChart:bgBottomColor="#292929"
             lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"
@@ -182,7 +182,7 @@
             android:layout_width="match_parent"
             android:layout_height="500dp"
             android:layout_marginTop="50dp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
