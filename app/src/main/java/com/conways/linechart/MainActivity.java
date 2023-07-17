@@ -1,5 +1,6 @@
 package com.conways.linechart;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -63,16 +64,25 @@ public class MainActivity extends AppCompatActivity implements ScrollListener {
         for (int i = 0; i < 288; i++) {
             CandleChartModel chartModel = new CandleChartModel();
             chartModel.setIndex(String.valueOf(i));
-            /*if (i % 5 == 0) {
-                chartModel.setLength((int) (candleChart.getMax() * 0.1));
-            } else if (i % 4 == 0) {
+            if (i % 5 == 0) {
                 chartModel.setLength((int) (candleChart.getMax() * 0.2));
-            } else if (i % 3 == 0) {
+                chartModel.setColor(Color.parseColor("#FFBAA76D"));
+                chartModel.setType(CandleChartModel.Type.LOW);
+            } else if (i % 4 == 0) {
                 chartModel.setLength((int) (candleChart.getMax() * 0.3));
-            } else if (i % 2 == 0) {
+                chartModel.setColor(Color.parseColor("#FFFFEB3B"));
+                chartModel.setType(CandleChartModel.Type.MEDIUM);
+            } else if (i % 3 == 0) {
                 chartModel.setLength((int) (candleChart.getMax() * 0.4));
-            }*/
-            chartModel.setLength((int) (candleChart.getMax() * 0.4));
+                chartModel.setColor(Color.parseColor("#FFffffff"));
+                chartModel.setMarkText("2");
+                chartModel.setType(CandleChartModel.Type.HIGH);
+            } else {
+                chartModel.setLength((int) (candleChart.getMax() * 0.1));
+                chartModel.setColor(Color.parseColor("#545353"));
+                chartModel.setType(CandleChartModel.Type.INACTIVE);
+            }
+//            chartModel.setLength((int) (candleChart.getMax() * 0.4));
             candleChartModelList.add(chartModel);
         }
 

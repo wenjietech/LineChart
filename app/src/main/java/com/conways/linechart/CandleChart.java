@@ -6,15 +6,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -76,24 +77,17 @@ public class CandleChart extends View {
     private float centerLineWidth;
 
     private Paint chartLinePaint;
+    private Paint markPaint;
     private RectF rectF;
     private ScrollListener scrollLisenter;
-    //    private Path path = new Path();
-//    private Path fillPath = new Path();
-    private float unitHLenth;
-
     private int mWith;
     private int mHeight;
 
     private float offSet;
-    private float prefixOffSet;
-
     private Rect yTextBounds;
     private Rect xTextBounds;
 
     private List<CandleChartModel> list = new ArrayList<>();
-    private int prefixCount;
-    private int suffixCount;
 
 
     public CandleChart(Context context) {
@@ -202,6 +196,10 @@ public class CandleChart extends View {
         chartLinePaint.setAntiAlias(true);
         chartLinePaint.setStyle(Paint.Style.STROKE);
 
+        markPaint = new Paint();
+        markPaint.setAntiAlias(true);
+        markPaint.setTextSize(xTextSize);
+
         rectF = new RectF();
 
         yTextBounds = new Rect();
@@ -235,10 +233,21 @@ public class CandleChart extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         mWith = w;
         mHeight = h;
-        unitHLenth = (mWith - leftWith - rightWith) / hCount;
-        prefixOffSet = prefixCount * unitHLenth;
-        offSet = prefixOffSet;
-
+        CandleChartModel model;
+        boolean hasActivity = false;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            model = list.get(i);
+            if (model.getType() != CandleChartModel.Type.INACTIVE) {
+                offSet = (list.size() - 1 - i) * 3 * chartLineWidth;
+                hasActivity = true;
+                break;
+            }
+        }
+        if(!hasActivity){
+            Calendar calendar = Calendar.getInstance();
+            int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
+            offSet = (list.size() - minutes / 5f) * 3 * chartLineWidth;
+        }
     }
 
     @Override
@@ -286,105 +295,36 @@ public class CandleChart extends View {
         }
     }
 
-    float maxLeftOffset;
 
     private void drawContent(Canvas canvas) {
         CandleChartModel model;
-        Log.d("test", "chartLineWidth=" + chartLineWidth);
-        Log.d("test", "offSet=" + offSet);
-        Log.d("test", "moveOffSet=" + moveOffSet);
-        Log.d("test", "width=" + (offSet + moveOffSet + (mWith - leftWith - rightWith) + leftWith));
         for (int i = list.size() - 1; i >= 0; i--) {
-//            Log.d("test", "i=" + i);
             model = list.get(i);
             float x = offSet + moveOffSet + (mWith - leftWith - rightWith) + leftWith - ((list.size() - i - 1) * 3) * chartLineWidth - chartLineWidth;
-            float y = mHeight - bottomWith - model.getLength() * (mHeight - topWith - bottomWith) / (xMax - xMin);
-//            Log.d("test", "x=" + x);
-            if (model.getLength() > 0) {
-                rectF.left = x - chartLineWidth / 2f;
-                rectF.top = y;
-                rectF.right = x + chartLineWidth / 2f;
-                rectF.bottom = mHeight - bottomWith - chartLineWidth / 2f;
-//                Log.d("test", "rectF=" + rectF);
-
-                chartLinePaint.setColor(chartLineColor);
-                canvas.drawRoundRect(rectF, chartLineWidth / 2f, chartLineWidth / 2f, chartLinePaint);
+            float y = (mHeight - bottomWith) * 2 / 3f - (model.getLength() * (mHeight - topWith - bottomWith) / (xMax - xMin)) / 2f;
+            rectF.left = x - chartLineWidth / 2f;
+            rectF.top = y;
+            rectF.right = x + chartLineWidth / 2f;
+            rectF.bottom = y + (model.getLength() * (mHeight - topWith - bottomWith) / (xMax - xMin));
+            chartLinePaint.setColor(model.getColor());
+            canvas.drawRoundRect(rectF, chartLineWidth / 2f, chartLineWidth / 2f, chartLinePaint);
+            if (!TextUtils.isEmpty(model.getMarkText())) {
+                markPaint.setColor(Color.parseColor("#80000000"));
+                markPaint.setStyle(Paint.Style.FILL);
+                canvas.drawCircle(x, y - (mHeight - bottomWith) * 0.2f, 40f, markPaint);
+                markPaint.setColor(Color.parseColor("#ffffff"));
+                markPaint.setStyle(Paint.Style.STROKE);
+                markPaint.getTextBounds(model.getMarkText(), 0, model.getMarkText().length(), xTextBounds);
+                canvas.drawText(model.getMarkText(), x - xTextBounds.width() / 2f, y - (mHeight - bottomWith) * 0.2f + xTextBounds.height() / 2f, markPaint);
             }
             if (i % 48 == 0) {
                 String xText = list.get(i).getIndex();
                 xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
                 xTextPaint.setColor(xTextColor & 0x80ffffff);
+                xTextPaint.setColor(xTextColor);
                 canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
             }
-
-            if (i == 0) {
-                maxLeftOffset = x - chartLineWidth / 2f;
-                Log.d("test", "maxLeftOffset=" + maxLeftOffset);
-            }
         }
-        /*float unitVLenth = (mHeight - topWith - bottomWith) / vCount;
-        drawGrid(canvas, unitVLenth);
-        if (null == list || list.size() <= 0) {
-            return;
-        }
-        float unitHLenth = (mWith - leftWith - rightWith) / hCount;
-        int firstPosition = 0;
-        float tempOffset = offSet + moveOffSet;
-        if (tempOffset > (mWith - leftWith - rightWith) / 2 + unitHLenth) {
-            firstPosition = (int) ((tempOffset - (mWith - leftWith - rightWith) / 2) / unitHLenth);
-        }
-        int lastPosition = Math.min(firstPosition + hCount + 2, list.size());
-        ChartModel current;
-        for (int i = firstPosition; i < lastPosition; i++) {
-            current = list.get(i);
-            float x = offSet + moveOffSet + (mWith - leftWith - rightWith) / 2 + leftWith - i * unitHLenth;
-            float y = mHeight - bottomWith - current.getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
-            if (current.getValue() > 0) {
-                rectF.left = x - chartLineWidth / 2f;
-                rectF.top = y;
-                rectF.right = x + chartLineWidth / 2f;
-                rectF.bottom = mHeight - bottomWith - chartLineWidth / 2f;
-                chartLinePaint.setColor(lineNormalColor);
-                canvas.drawRoundRect(rectF, chartLineWidth / 2f, chartLineWidth / 2f, chartLinePaint);
-            }
-            String xText = list.get(i).getIndex();
-            xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
-            xTextPaint.setColor(xTextColor & 0x80ffffff);
-            canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
-        }
-        if ((offSet + moveOffSet) < 0 || (offSet + moveOffSet) > (list.size() - 1) * unitHLenth) {
-            return;
-        }
-        int position = Math.round((offSet + moveOffSet) / unitHLenth);
-
-        if (list.get(position).getValue() == 0) {
-            return;
-        }
-        float x = (mWith - leftWith - rightWith) / 2 + leftWith;
-        float y;
-        float temp = (offSet + moveOffSet) % unitHLenth;
-
-        float y1 = mHeight - bottomWith - list.get(position).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
-        if (moveOffSet == 0 || (offSet + moveOffSet) == (list.size() - 1) * unitHLenth) {
-            y = y1;
-        } else {
-            float y2 = mHeight - bottomWith - list.get(position + 1).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
-            y = y1 + temp * (y2 - y1) / unitHLenth;
-        }
-//        canvas.drawCircle(x, y, scaleNodeRadius, scaleNodePaint);
-        if (moveOffSet == 0) {
-            String xText = list.get(position).getIndex();
-            xTextPaint.setColor(xTextColor);
-            xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
-            canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
-
-            rectF.left = x - chartLineWidth / 2f;
-            rectF.top = y;
-            rectF.right = x + chartLineWidth / 2f;
-            rectF.bottom = mHeight - bottomWith - chartLineWidth / 2f;
-            chartLinePaint.setColor(lineSelectColor);
-            canvas.drawRoundRect(rectF, chartLineWidth / 2f, chartLineWidth / 2f, chartLinePaint);
-        }*/
     }
 
     private void drawGrid(Canvas canvas, float unitLenth) {
@@ -399,7 +339,6 @@ public class CandleChart extends View {
 
     private float xDown;
     private float moveOffSet;
-    private float maxOffSet;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -413,8 +352,8 @@ public class CandleChart extends View {
                 Log.d("test", "Offset=" + (offSet + moveOffSet));
                 if (offSet + moveOffSet < 0) {
                     moveOffSet = 0 - offSet;
-                } else if (offSet + moveOffSet > (list.size() - 1) * 3 * chartLineWidth - mWith + chartLineWidth * 2) {
-                    moveOffSet = (list.size() - 1) * 3 * chartLineWidth - mWith + chartLineWidth * 2 - offSet;
+                } else if (offSet + moveOffSet > (list.size() - 1) * 3 * chartLineWidth - mWith + chartLineWidth * 3) {
+                    moveOffSet = (list.size() - 1) * 3 * chartLineWidth - mWith + chartLineWidth * 3 - offSet;
                 }
 //                callBack();
                 invalidate();
@@ -462,22 +401,6 @@ public class CandleChart extends View {
         xDown = 0f;
         moveOffSet = 0f;
     }
-
-    private void setToUnit() {
-        if (offSet < prefixOffSet) {
-            offSet = prefixOffSet;
-            return;
-        }
-        if (offSet > (list.size() - 1 - suffixCount) * unitHLenth) {
-            offSet = (list.size() - 1 - suffixCount) * unitHLenth;
-            return;
-        }
-
-        float temp = offSet % unitHLenth;
-        int position = (int) (temp < unitHLenth / 2 ? offSet / unitHLenth : offSet / unitHLenth + 1);
-        offSet = unitHLenth * position;
-    }
-
 
     private int dip2px(float dpValue) {
         float scale = getContext().getResources().getDisplayMetrics().density;

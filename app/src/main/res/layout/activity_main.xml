@@ -25,7 +25,7 @@
             android:layout_height="150dp"
             android:visibility="gone"
             lineChart:bgBottomColor="#292929"
-            lineChart:bgColor="#292929"
+            lineChart:bgColor="#BAA76D"
             lineChart:bgLeftColor="#292929"
             lineChart:bgRightColor="#292929"
             lineChart:bgTopColor="#292929"
