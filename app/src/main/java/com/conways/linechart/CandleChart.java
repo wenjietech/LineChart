@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -33,53 +32,37 @@ public class CandleChart extends View {
 
     private int xTextColor;
     private int yTextColor;
-    private int scaleColor;
     private int xLineColor;
     private int yLineColor;
 
     private int chartLineColor;
     private float chartLineWidth = 10f;
-
     private boolean showGrid;
     private int gridColor;
-
     private int vCount;
     private int hCount;
-
     private int xMax;
     private int xMin;
-
     private float leftWith;
     private float rightWith;
     private float bottomWith;
     private float topWith;
-
     private float xTextSize;
     private float yTextSize;
-
     private Paint bgPaint;
     private Paint bgLeftPaint;
     private Paint bgRightPaint;
     private Paint bgTopPaint;
-    private Paint bgTopSelectedPaint;
     private Paint bgBottomPaint;
-
     private Paint xTextPaint;
     private Paint yTextPaint;
-    private Paint scalePaint;
     private Paint xLinePaint;
     private Paint yLinePaint;
     private Paint gridPaint;
-    private Paint centerLinePaint;
-    private int centerLineColor;
-    private int lineNormalColor = 0xffffff;
-    private int lineSelectColor = 0x00000000;
-    private float centerLineWidth;
-
     private Paint chartLinePaint;
     private Paint markPaint;
     private RectF rectF;
-    private ScrollListener scrollLisenter;
+    private ScrollListener scrollListener;
     private int mWith;
     private int mHeight;
 
@@ -87,7 +70,7 @@ public class CandleChart extends View {
     private Rect yTextBounds;
     private Rect xTextBounds;
 
-    private List<CandleChartModel> list = new ArrayList<>();
+    private final List<CandleChartModel> list = new ArrayList<>();
 
 
     public CandleChart(Context context) {
@@ -118,7 +101,6 @@ public class CandleChart extends View {
         bgBottomColor = ta.getColor(R.styleable.CandleChart_bgBottomColor, 0xffffffff);
         xTextColor = ta.getColor(R.styleable.CandleChart_xTextColor, 0xff000000);
         yTextColor = ta.getColor(R.styleable.CandleChart_yTextColor, 0xff000000);
-        scaleColor = ta.getColor(R.styleable.CandleChart_scaleColor, 0xff000000);
         xLineColor = ta.getColor(R.styleable.CandleChart_xLineColor, 0xff000000);
         yLineColor = ta.getColor(R.styleable.CandleChart_yTextColor, 0xff000000);
         showGrid = ta.getBoolean(R.styleable.CandleChart_showGrid, false);
@@ -135,8 +117,6 @@ public class CandleChart extends View {
         topWith = ta.getDimension(R.styleable.CandleChart_topWith, 8f);
         chartLineColor = ta.getColor(R.styleable.CandleChart_chartLineColor, 0xff000000);
         chartLineWidth = ta.getDimension(R.styleable.CandleChart_chartLineWidth, 10f);
-        centerLineWidth = ta.getDimension(R.styleable.CandleChart_centerLineWidth, 10f);
-        centerLineColor = ta.getColor(R.styleable.CandleChart_centerLineColor, 0xff000000);
         ta.recycle();
         initPaint();
 
@@ -155,8 +135,6 @@ public class CandleChart extends View {
         bgTopPaint = new Paint();
         bgTopPaint.setColor(bgTopColor);
 
-        bgTopSelectedPaint = new Paint();
-
         bgBottomPaint = new Paint();
         bgBottomPaint.setColor(bgBottomColor);
 
@@ -169,10 +147,6 @@ public class CandleChart extends View {
         yTextPaint.setTextSize(yTextSize);
         yTextPaint.setAntiAlias(true);
 
-        scalePaint = new Paint();
-        scalePaint.setColor(scaleColor);
-        scalePaint.setStrokeWidth(dip2px(1));
-
         xLinePaint = new Paint();
         xLinePaint.setColor(xLineColor);
 //        xLinePaint.setStrokeWidth(dip2px(1));
@@ -184,17 +158,11 @@ public class CandleChart extends View {
         gridPaint = new Paint();
         gridPaint.setColor(gridColor);
 
-        centerLinePaint = new Paint();
-        centerLinePaint.setColor(centerLineColor);
-        centerLinePaint.setStrokeWidth(centerLineWidth);
-        centerLinePaint.setStyle(Paint.Style.STROKE);
-        centerLinePaint.setPathEffect(new DashPathEffect(new float[]{5, 10}, 0));
-
         chartLinePaint = new Paint();
         chartLinePaint.setStrokeWidth(chartLineWidth);
         chartLinePaint.setColor(chartLineColor);
         chartLinePaint.setAntiAlias(true);
-        chartLinePaint.setStyle(Paint.Style.STROKE);
+        chartLinePaint.setStyle(Paint.Style.FILL);
 
         markPaint = new Paint();
         markPaint.setAntiAlias(true);
@@ -226,7 +194,7 @@ public class CandleChart extends View {
     }
 
     public void setScrollListener(ScrollListener listener) {
-        this.scrollLisenter = listener;
+        this.scrollListener = listener;
     }
 
     @Override
@@ -243,7 +211,7 @@ public class CandleChart extends View {
                 break;
             }
         }
-        if(!hasActivity){
+        if (!hasActivity) {
             Calendar calendar = Calendar.getInstance();
             int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
             offSet = (list.size() - minutes / 5f) * 3 * chartLineWidth;
@@ -276,8 +244,8 @@ public class CandleChart extends View {
 
     private void drawBottom(Canvas canvas) {
         canvas.drawRect(0, mHeight - bottomWith, mWith, mHeight, bgBottomPaint);
-        canvas.drawLine(leftWith, mHeight - bottomWith, mWith - rightWith, mHeight - bottomWith,
-                xLinePaint);
+//        canvas.drawLine(leftWith, mHeight - bottomWith, mWith - rightWith, mHeight - bottomWith,
+//                xLinePaint);
     }
 
 
@@ -302,6 +270,18 @@ public class CandleChart extends View {
             model = list.get(i);
             float x = offSet + moveOffSet + (mWith - leftWith - rightWith) + leftWith - ((list.size() - i - 1) * 3) * chartLineWidth - chartLineWidth;
             float y = (mHeight - bottomWith) * 2 / 3f - (model.getLength() * (mHeight - topWith - bottomWith) / (xMax - xMin)) / 2f;
+
+            if (i % 48 == 0) {
+                String xText = model.getIndex();
+                xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
+                xTextPaint.setColor(xTextColor & 0x80ffffff);
+                xTextPaint.setColor(xTextColor);
+                canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+                xTextPaint.setColor(Color.parseColor("#FF7A7977"));
+                canvas.drawLine(x, (mHeight - bottomWith) / 3f, x, (mHeight - bottomWith), xTextPaint);
+            }
+
+
             rectF.left = x - chartLineWidth / 2f;
             rectF.top = y;
             rectF.right = x + chartLineWidth / 2f;
@@ -317,13 +297,7 @@ public class CandleChart extends View {
                 markPaint.getTextBounds(model.getMarkText(), 0, model.getMarkText().length(), xTextBounds);
                 canvas.drawText(model.getMarkText(), x - xTextBounds.width() / 2f, y - (mHeight - bottomWith) * 0.2f + xTextBounds.height() / 2f, markPaint);
             }
-            if (i % 48 == 0) {
-                String xText = list.get(i).getIndex();
-                xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
-                xTextPaint.setColor(xTextColor & 0x80ffffff);
-                xTextPaint.setColor(xTextColor);
-                canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
-            }
+
         }
     }
 
@@ -376,7 +350,7 @@ public class CandleChart extends View {
     private int scrollPosition = -1;
 
     private void callBack() {
-        if (null == scrollLisenter || null == list || list.size() <= 0) {
+        if (null == scrollListener || null == list || list.size() <= 0) {
             return;
         }
         float unitH = (mWith - leftWith - rightWith) / hCount;
@@ -393,7 +367,7 @@ public class CandleChart extends View {
             return;
         }
         scrollPosition = tempPosition;
-        scrollLisenter.scroll(list.get(scrollPosition));
+        scrollListener.scroll(list.get(scrollPosition));
     }
 
 

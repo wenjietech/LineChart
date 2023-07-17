@@ -6,5 +6,5 @@ package com.conways.linechart;
 
 public interface ScrollListener {
 
-    public void scroll(ChartModel chartModel);
+    void scroll(ChartModel chartModel);
 }
