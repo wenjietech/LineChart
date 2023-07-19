@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         BarChart barChart = (BarChart) this.findViewById(R.id.barChart);
         LineChart lineChart2 = (LineChart) this.findViewById(R.id.lineChart2);
         CandleChart candleChart = (CandleChart) this.findViewById(R.id.candleChart);
+        SleepLineChart sleepLineChart = (SleepLineChart) this.findViewById(R.id.sleepLineChart);
         tv = (TextView) this.findViewById(R.id.textView);
         lineChart.setOnChartScrollChangedListener(new OnChartScrollChangedListener() {
 
@@ -57,18 +58,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         List<ChartModel> list = new ArrayList<>();
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 48; i++) {
             ChartModel chartModel = new ChartModel();
             chartModel.setIndex(String.valueOf(i));
             chartModel.setTitle("date " + i);
             if (i % 2 == 0) {
-                if (i == 2) {
-                    chartModel.setValue(0);
-                } else {
-                    chartModel.setValue(lineChart.getMax() / 5);
-                }
+                chartModel.setValue(40);
             } else {
-                chartModel.setValue(lineChart.getMax() * 4 / 5);
+                chartModel.setValue(80);
             }
             list.add(chartModel);
         }
@@ -84,6 +81,14 @@ public class MainActivity extends AppCompatActivity {
         lineChart.updateData(list, prefix, suffix);
         barChart.updateData(list, prefix, suffix);
         lineChart2.updateData(list, prefix, suffix);
+
+
+        SleepModel sleepModel = new SleepModel();
+        sleepModel.setStartTime("07:00");
+        sleepModel.setEndTime("09:00");
+        sleepModel.setList(list);
+        sleepLineChart.updateData(sleepModel);
+
 
         List<CandleChartModel> candleChartModelList = new ArrayList<>();
         for (int i = 0; i < 288; i++) {
@@ -112,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         candleChart.updateData(candleChartModelList);
+
     }
 
 }

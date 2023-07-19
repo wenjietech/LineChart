@@ -293,7 +293,6 @@ public class CandleChart extends View {
                 markPaint.setStyle(Paint.Style.FILL);
                 canvas.drawCircle(x, y - (mHeight - bottomWith) * 0.2f, 40f, markPaint);
                 markPaint.setColor(Color.parseColor("#ffffff"));
-                markPaint.setStyle(Paint.Style.STROKE);
                 markPaint.getTextBounds(model.getMarkText(), 0, model.getMarkText().length(), xTextBounds);
                 canvas.drawText(model.getMarkText(), x - xTextBounds.width() / 2f, y - (mHeight - bottomWith) * 0.2f + xTextBounds.height() / 2f, markPaint);
             }
@@ -323,7 +322,6 @@ public class CandleChart extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveOffSet = event.getX() - xDown;
-                Log.d("test", "Offset=" + (offSet + moveOffSet));
                 if (offSet + moveOffSet < 0) {
                     moveOffSet = 0 - offSet;
                 } else if (offSet + moveOffSet > (list.size() - 1) * 3 * chartLineWidth - mWith + chartLineWidth * 3) {
