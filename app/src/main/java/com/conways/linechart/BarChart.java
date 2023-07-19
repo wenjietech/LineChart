@@ -76,16 +76,17 @@ public class BarChart extends View {
 
     private Paint chartLinePaint;
     private RectF rectF;
-    private ScrollListener scrollListener;
+    private OnChartScrollChangedListener onChartScrollChangedListener;
     //    private Path path = new Path();
 //    private Path fillPath = new Path();
     private float unitHLenth;
+    private float indicatorUnitLength;
 
     private int mWith;
     private int mHeight;
 
     private float offSet;
-    private float prefixOffSet;
+    private float indicatorOffSet;
 
     private Rect yTextBounds;
     private Rect xTextBounds;
@@ -93,6 +94,7 @@ public class BarChart extends View {
     private List<ChartModel> list = new ArrayList<>();
     private int prefixCount;
     private int suffixCount;
+    private float titleWidth = 0f;
 
 
     public BarChart(Context context) {
@@ -144,6 +146,7 @@ public class BarChart extends View {
         centerLineColor = ta.getColor(R.styleable.BarChart_centerLineColor, 0xff000000);
         lineNormalColor = ta.getColor(R.styleable.BarChart_lineNormalColor, 0x80ffffff);
         lineSelectColor = ta.getColor(R.styleable.BarChart_lineSelectColor, 0x00000000);
+        titleWidth = ta.getDimension(R.styleable.LineChart_titleWidth, 0f);
         ta.recycle();
         initPaint();
 
@@ -234,8 +237,8 @@ public class BarChart extends View {
         this.xMax = xMax;
     }
 
-    public void setScrollListener(ScrollListener listener) {
-        this.scrollListener = listener;
+    public void setOnChartScrollChangedListener(OnChartScrollChangedListener listener) {
+        this.onChartScrollChangedListener = listener;
     }
 
     @Override
@@ -243,8 +246,14 @@ public class BarChart extends View {
         mWith = w;
         mHeight = h;
         unitHLenth = (mWith - leftWith - rightWith) / hCount;
-        prefixOffSet = prefixCount * unitHLenth;
-        offSet = prefixOffSet;
+        offSet = prefixCount * unitHLenth;
+
+        if (titleWidth == 0) {
+            indicatorUnitLength = mWith / 3f;
+        } else {
+            indicatorUnitLength = titleWidth;
+        }
+        indicatorOffSet = prefixCount * indicatorUnitLength;
 
         selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
         selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
@@ -257,9 +266,9 @@ public class BarChart extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBg(canvas);
+        drawTop(canvas);
         drawBottom(canvas);
         drawContent(canvas);
-        drawTop(canvas);
         drawRight(canvas);
         drawLeft(canvas);
     }
@@ -311,7 +320,7 @@ public class BarChart extends View {
         if (null == list || list.size() <= 0) {
             return;
         }
-        float unitHLenth = (mWith - leftWith - rightWith) / hCount;
+//        float unitHLenth = (mWith - leftWith - rightWith) / hCount;
         int firstPosition = 0;
         float tempOffset = offSet + moveOffSet;
         if (tempOffset > (mWith - leftWith - rightWith) / 2 + unitHLenth) {
@@ -335,6 +344,11 @@ public class BarChart extends View {
             xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
             xTextPaint.setColor(xTextColor & 0x80ffffff);
             canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+
+            String title = list.get(i).getTitle();
+            float xInd = indicatorOffSet + (moveOffSet * list.size() * indicatorUnitLength / (list.size() * unitHLenth)) + (mWith - leftWith - rightWith) / 2 + leftWith - i * indicatorUnitLength;
+            xTextPaint.getTextBounds(title, 0, title.length(), xTextBounds);
+            canvas.drawText(title, xInd - xTextBounds.width() / 2f, topWith / 2 + xTextBounds.height() / 2f, xTextPaint);
         }
         if ((offSet + moveOffSet) < 0 || (offSet + moveOffSet) > (list.size() - 1) * unitHLenth) {
             return;
@@ -361,6 +375,11 @@ public class BarChart extends View {
             xTextPaint.setColor(xTextColor);
             xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
             canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+
+            String title = list.get(position).getTitle();
+            float xInd = indicatorOffSet + (moveOffSet * list.size() * indicatorUnitLength / (list.size() * unitHLenth)) + (mWith - leftWith - rightWith) / 2 + leftWith - position * indicatorUnitLength;
+            xTextPaint.getTextBounds(title, 0, title.length(), xTextBounds);
+            canvas.drawText(title, xInd - xTextBounds.width() / 2f, topWith / 2 + xTextBounds.height() / 2f, xTextPaint);
 
             rectF.left = x - chartLineWidth / 2f;
             rectF.top = y;
@@ -399,17 +418,14 @@ public class BarChart extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveOffSet = event.getX() - xDown;
-//                callBack();
-                if (scrollListener != null) {
-                    scrollListener.onScroll(moveOffSet);
-                }
+                callBack(false);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
                 offSet += event.getX() - xDown;
                 resetData();
                 setToUnit();
-                callBack();
+                callBack(true);
                 invalidate();
                 break;
             default:
@@ -422,8 +438,8 @@ public class BarChart extends View {
 
     private int scrollPosition = -1;
 
-    private void callBack() {
-        if (null == scrollListener || null == list || list.size() <= 0) {
+    private void callBack(boolean isSelected) {
+        if (null == onChartScrollChangedListener || null == list || list.size() <= 0) {
             return;
         }
         float unitH = (mWith - leftWith - rightWith) / hCount;
@@ -440,7 +456,11 @@ public class BarChart extends View {
             return;
         }
         scrollPosition = tempPosition;
-        scrollListener.onPositionSelected(scrollPosition, list.get(scrollPosition));
+        if (isSelected) {
+            onChartScrollChangedListener.onPositionSelected(scrollPosition, list.get(scrollPosition));
+        } else {
+            onChartScrollChangedListener.onScrolling(scrollPosition, list.get(scrollPosition));
+        }
     }
 
 
@@ -450,18 +470,21 @@ public class BarChart extends View {
     }
 
     private void setToUnit() {
-        if (offSet < prefixOffSet) {
-            offSet = prefixOffSet;
+        if (offSet < prefixCount * unitHLenth) {
+            offSet = prefixCount * unitHLenth;
+            indicatorOffSet = prefixCount * indicatorUnitLength;
             return;
         }
         if (offSet > (list.size() - 1 - suffixCount) * unitHLenth) {
             offSet = (list.size() - 1 - suffixCount) * unitHLenth;
+            indicatorOffSet = (list.size() - suffixCount - 1) * indicatorUnitLength;
             return;
         }
 
         float temp = offSet % unitHLenth;
         int position = (int) (temp < unitHLenth / 2 ? offSet / unitHLenth : offSet / unitHLenth + 1);
         offSet = unitHLenth * position;
+        indicatorOffSet = indicatorUnitLength * position;
     }
 
 

@@ -1,14 +1,15 @@
 package com.conways.linechart;
 
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ScrollListener {
+public class MainActivity extends AppCompatActivity {
 
     private String TAG = "zzzzz";
     private TextView tv;
@@ -21,8 +22,31 @@ public class MainActivity extends AppCompatActivity implements ScrollListener {
         BarChart barChart = (BarChart) this.findViewById(R.id.barChart);
         LineChart lineChart2 = (LineChart) this.findViewById(R.id.lineChart2);
         CandleChart candleChart = (CandleChart) this.findViewById(R.id.candleChart);
-        lineChart.setScrollListener(this);
         tv = (TextView) this.findViewById(R.id.textView);
+        lineChart.setOnChartScrollChangedListener(new OnChartScrollChangedListener() {
+
+            @Override
+            public void onScrolling(int position, ChartModel chartModel) {
+                tv.setText(String.valueOf(chartModel.getValue()));
+            }
+
+            @Override
+            public void onPositionSelected(int position, ChartModel chartModel) {
+                tv.setText(String.valueOf(chartModel.getValue()));
+            }
+        });
+
+        barChart.setOnChartScrollChangedListener(new OnChartScrollChangedListener() {
+            @Override
+            public void onPositionSelected(int position, ChartModel chartModel) {
+                tv.setText(String.valueOf(chartModel.getValue()));
+            }
+
+            @Override
+            public void onScrolling(int position, ChartModel chartModel) {
+                tv.setText(String.valueOf(chartModel.getValue()));
+            }
+        });
 
         List<ChartModel> prefix = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
@@ -36,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements ScrollListener {
         for (int i = 0; i < 14; i++) {
             ChartModel chartModel = new ChartModel();
             chartModel.setIndex(String.valueOf(i));
+            chartModel.setTitle("date " + i);
             if (i % 2 == 0) {
                 if (i == 2) {
                     chartModel.setValue(0);
@@ -89,13 +114,4 @@ public class MainActivity extends AppCompatActivity implements ScrollListener {
         candleChart.updateData(candleChartModelList);
     }
 
-    @Override
-    public void onPositionSelected(int position, ChartModel chartModel) {
-        tv.setText(chartModel.getValue() + "");
-    }
-
-    @Override
-    public void onScroll(float offset) {
-
-    }
 }

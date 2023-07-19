@@ -62,7 +62,7 @@ public class CandleChart extends View {
     private Paint chartLinePaint;
     private Paint markPaint;
     private RectF rectF;
-    private ScrollListener scrollListener;
+    private OnChartScrollChangedListener onChartScrollChangedListener;
     private int mWith;
     private int mHeight;
 
@@ -193,8 +193,8 @@ public class CandleChart extends View {
         this.xMax = xMax;
     }
 
-    public void setScrollListener(ScrollListener listener) {
-        this.scrollListener = listener;
+    public void setScrollListener(OnChartScrollChangedListener listener) {
+        this.onChartScrollChangedListener = listener;
     }
 
     @Override
@@ -350,7 +350,7 @@ public class CandleChart extends View {
     private int scrollPosition = -1;
 
     private void callBack() {
-        if (null == scrollListener || null == list || list.size() <= 0) {
+        if (null == onChartScrollChangedListener || null == list || list.size() <= 0) {
             return;
         }
         float unitH = (mWith - leftWith - rightWith) / hCount;
@@ -367,7 +367,7 @@ public class CandleChart extends View {
             return;
         }
         scrollPosition = tempPosition;
-        scrollListener.scroll(list.get(scrollPosition));
+        onChartScrollChangedListener.onPositionSelected(scrollPosition, list.get(scrollPosition));
     }
 
 

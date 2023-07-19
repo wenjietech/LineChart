@@ -94,16 +94,17 @@ public class LineChart extends View {
 
     private Paint scaleNodePaint;
 
-    private ScrollListener scrollListener;
+    private OnChartScrollChangedListener onChartScrollChangedListener;
     private Path path = new Path();
     private Path fillPath = new Path();
     private float unitHLenth;
+    private float indicatorUnitLength;
 
     private int mWith;
     private int mHeight;
 
     private float offSet;
-    private float prefixOffSet;
+    private float indicatorOffSet;
 
     private Rect yTextBounds;
     private Rect xTextBounds;
@@ -114,6 +115,7 @@ public class LineChart extends View {
     private boolean canScroll = true;
     private boolean showXAxis = true;
     private boolean showSelectedIndicator = true;
+    private float titleWidth = 0f;
 
     private LinearGradient linearGradient;
 
@@ -176,6 +178,7 @@ public class LineChart extends View {
         canScroll = ta.getBoolean(R.styleable.LineChart_canScroll, true);
         showXAxis = ta.getBoolean(R.styleable.LineChart_showXAxis, true);
         showSelectedIndicator = ta.getBoolean(R.styleable.LineChart_showSelectedIndicator, true);
+        titleWidth = ta.getDimension(R.styleable.LineChart_titleWidth, 0f);
         ta.recycle();
         initPaint();
 
@@ -285,33 +288,44 @@ public class LineChart extends View {
         this.xMax = xMax;
     }
 
-    public void setScrollListener(ScrollListener listener) {
-        this.scrollListener = listener;
+    public void setOnChartScrollChangedListener(OnChartScrollChangedListener listener) {
+        this.onChartScrollChangedListener = listener;
     }
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         linearGradient = new LinearGradient(0, 0, 0, h, fillColorStart, fillColorEnd, Shader.TileMode.CLAMP);
         mWith = w;
         mHeight = h;
+
         unitHLenth = (mWith - leftWith - rightWith) / hCount;
-        prefixOffSet = prefixCount * unitHLenth;
-        offSet = prefixOffSet;
+        offSet = prefixCount * unitHLenth;
+
+        if (titleWidth == 0) {
+            indicatorUnitLength = mWith / 3f;
+        } else {
+            indicatorUnitLength = titleWidth;
+        }
+        indicatorOffSet = prefixCount * indicatorUnitLength;
 
         selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
         selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
         selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f);
         selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
         selectedLinePath.lineTo(mWith / 2f + 2 * unitHLenth, topWith);
+
+        callBack(true);
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBg(canvas);
+        drawTop(canvas);
         drawBottom(canvas);
         drawContent(canvas);
-        drawTop(canvas);
         drawRight(canvas);
         drawLeft(canvas);
     }
@@ -357,8 +371,6 @@ public class LineChart extends View {
         canvas.drawLine(leftWith, topWith, leftWith, mHeight - bottomWith, yLinePaint);
         float unitLenth = (mHeight - topWith - bottomWith) / vCount;
         for (int i = 1; i <= vCount; i++) {
-//            canvas.drawLine(leftWith, mHeight - bottomWith - i * unitLenth, ((xMin + i * (xMax - xMin) / vCount)) % 5 == 0 ? (leftWith + 2 * scaleLenth) :
-//                    (leftWith + scaleLenth), mHeight - bottomWith - i * unitLenth, scalePaint);
             String temp = (xMin + i * (xMax - xMin) / vCount) + "";
             yTextPaint.getTextBounds(temp, 0, temp.length(), yTextBounds);
             canvas.drawText(temp, leftWith - yTextBounds.width() - dip2px(4), mHeight - (bottomWith
@@ -372,7 +384,6 @@ public class LineChart extends View {
         if (null == list || list.size() <= 0) {
             return;
         }
-        float unitHLenth = (mWith - leftWith - rightWith) / hCount;
         int firstPosition = 0;
         float tempOffset = offSet + moveOffSet;
         if (tempOffset > (mWith - leftWith - rightWith) / 2 + unitHLenth) {
@@ -407,11 +418,17 @@ public class LineChart extends View {
                 canvas.drawCircle(x, y, outCircleRadius, outCirclePaint);
                 canvas.drawCircle(x, y, innerCircleRadius, innerCirclePaint);
             }
+
             if (showXAxis) {
                 String xText = list.get(i).getIndex();
+                String title = list.get(i).getTitle();
                 xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
                 xTextPaint.setColor(xTextColor & 0x80ffffff);
                 canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+
+                float xInd = indicatorOffSet + (moveOffSet * list.size() * indicatorUnitLength / (list.size() * unitHLenth)) + (mWith - leftWith - rightWith) / 2 + leftWith - i * indicatorUnitLength;
+                xTextPaint.getTextBounds(title, 0, title.length(), xTextBounds);
+                canvas.drawText(title, xInd - xTextBounds.width() / 2f, topWith / 2 + xTextBounds.height() / 2f, xTextPaint);
             }
             canvas.drawLine(x, topWith, x, mHeight - bottomWith, gridPaint);
         }
@@ -427,21 +444,22 @@ public class LineChart extends View {
         }
         float x = (mWith - leftWith - rightWith) / 2 + leftWith;
         float y;
-        float temp = (offSet + moveOffSet) % unitHLenth;
 
         float y1 = mHeight - bottomWith - list.get(position).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
         if (moveOffSet == 0 || (offSet + moveOffSet) == (list.size() - 1) * unitHLenth) {
             y = y1;
             canvas.drawCircle(x, y, scaleNodeRadius, scaleNodePaint);
-        } /*else {
-            float y2 = mHeight - bottomWith - list.get(position + 1).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
-            y = y1 + temp * (y2 - y1) / unitHLenth;
-        }*/
+        }
         if (moveOffSet == 0 && showXAxis) {
             String xText = list.get(position).getIndex();
             xTextPaint.setColor(xTextColor);
             xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
             canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+
+            String title = list.get(position).getTitle();
+            float xInd = indicatorOffSet + (moveOffSet * list.size() * indicatorUnitLength / (list.size() * unitHLenth)) + (mWith - leftWith - rightWith) / 2 + leftWith - position * indicatorUnitLength;
+            xTextPaint.getTextBounds(title, 0, title.length(), xTextBounds);
+            canvas.drawText(title, xInd - xTextBounds.width() / 2f, topWith / 2 + xTextBounds.height() / 2f, xTextPaint);
         }
     }
 
@@ -472,23 +490,18 @@ public class LineChart extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 getParent().requestDisallowInterceptTouchEvent(true);
-//                scaleNodePaint.setColor(Color.TRANSPARENT);
                 xDown = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveOffSet = event.getX() - xDown;
-                if (scrollListener != null) {
-                    scrollListener.onScroll(moveOffSet);
-                }
-//                callBack();
+                callBack(false);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-//                scaleNodePaint.setColor(scaleNodeColor);
                 offSet += event.getX() - xDown;
                 resetData();
                 setToUnit();
-                callBack();
+                callBack(true);
                 invalidate();
                 break;
             default:
@@ -501,8 +514,8 @@ public class LineChart extends View {
 
     private int scrollPosition = -1;
 
-    private void callBack() {
-        if (null == scrollListener || null == list || list.size() <= 0) {
+    private void callBack(boolean isSelected) {
+        if (null == onChartScrollChangedListener || null == list || list.size() <= 0) {
             return;
         }
         float unitH = (mWith - leftWith - rightWith) / hCount;
@@ -519,7 +532,11 @@ public class LineChart extends View {
             return;
         }
         scrollPosition = tempPosition;
-        scrollListener.onPositionSelected(scrollPosition, list.get(scrollPosition));
+        if (isSelected) {
+            onChartScrollChangedListener.onPositionSelected(scrollPosition, list.get(scrollPosition));
+        } else {
+            onChartScrollChangedListener.onScrolling(scrollPosition, list.get(scrollPosition));
+        }
     }
 
 
@@ -529,18 +546,21 @@ public class LineChart extends View {
     }
 
     private void setToUnit() {
-        if (offSet < prefixOffSet) {
-            offSet = prefixOffSet;
+        if (offSet < prefixCount * unitHLenth) {
+            offSet = prefixCount * unitHLenth;
+            indicatorOffSet = prefixCount * indicatorUnitLength;
             return;
         }
         if (offSet > (list.size() - suffixCount - 1) * unitHLenth) {
             offSet = (list.size() - suffixCount - 1) * unitHLenth;
+            indicatorOffSet = (list.size() - suffixCount - 1) * indicatorUnitLength;
             return;
         }
 
         float temp = offSet % unitHLenth;
         int position = (int) (temp < unitHLenth / 2 ? offSet / unitHLenth : offSet / unitHLenth + 1);
         offSet = unitHLenth * position;
+        indicatorOffSet = indicatorUnitLength * position;
     }
 
 

@@ -12,7 +12,8 @@ public class ChartModel {
     /**
      * x-axis display text
      */
-    private String index;
+    private String index = "";
+    private String title = "";
 
 
     public int getValue() {
@@ -31,5 +32,11 @@ public class ChartModel {
         this.index = index;
     }
 
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

@@ -37,6 +37,7 @@
     <attr name="canScroll" format="boolean"/>
     <attr name="showXAxis" format="boolean"/>
     <attr name="showSelectedIndicator" format="boolean"/>
+    <attr name="titleWidth" format="dimension"/>
 
     <declare-styleable name="LineChart">
         <attr name="bgColor"/>
@@ -77,6 +78,7 @@
         <attr name="canScroll"/>
         <attr name="showXAxis"/>
         <attr name="showSelectedIndicator"/>
+        <attr name="titleWidth"/>
     </declare-styleable>
 
     <declare-styleable name="BarChart">
@@ -111,6 +113,7 @@
         <attr name="centerLineColor" />
         <attr name="lineNormalColor" format="color" />
         <attr name="lineSelectColor" format="color"/>
+        <attr name="titleWidth"/>
     </declare-styleable>
 
     <declare-styleable name="CandleChart">
