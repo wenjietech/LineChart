@@ -63,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
             chartModel.setIndex(String.valueOf(i));
             chartModel.setTitle("date " + i);
             if (i % 2 == 0) {
-                chartModel.setValue(40);
+                if (i == 2) {
+                    chartModel.setValue(0);
+                } else {
+//                    chartModel.setValue(lineChart.getMax() / 5);
+                    chartModel.setValue(40);
+                }
             } else {
                 chartModel.setValue(80);
             }

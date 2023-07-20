@@ -43,11 +43,8 @@ public class LineChart extends View {
 
     private int scaleNodeColor;
 
-    private boolean showGrid;
     private int gridColor;
-    private float scaleLenth;
 
-    private int vCount;
     private int hCount;
 
     private int xMax;
@@ -75,25 +72,18 @@ public class LineChart extends View {
     private Paint bgBottomPaint;
 
     private Paint xTextPaint;
-    private Paint yTextPaint;
-    private Paint scalePaint;
     private Paint xLinePaint;
-    private Paint yLinePaint;
     private Paint gridPaint;
     private Paint centerLinePaint;
     private int centerLineColor;
     private int fillColorStart;
     private int fillColorEnd;
     private float centerLineWidth;
-
     private Paint innerCirclePaint;
     private Paint outCirclePaint;
-
     private Paint chartLinePaint;
     private Paint chartLineFillPaint;
-
     private Paint scaleNodePaint;
-
     private OnChartScrollChangedListener onChartScrollChangedListener;
     private Path path = new Path();
     private Path fillPath = new Path();
@@ -106,7 +96,6 @@ public class LineChart extends View {
     private float offSet;
     private float indicatorOffSet;
 
-    private Rect yTextBounds;
     private Rect xTextBounds;
 
     private List<ChartModel> list = new ArrayList<>();
@@ -116,6 +105,10 @@ public class LineChart extends View {
     private boolean showXAxis = true;
     private boolean showSelectedIndicator = true;
     private float titleWidth = 0f;
+    private int maxValue;
+    private int minValue;
+    private int avgValue;
+
 
     private LinearGradient linearGradient;
 
@@ -150,9 +143,7 @@ public class LineChart extends View {
         scaleColor = ta.getColor(R.styleable.LineChart_scaleColor, 0xff000000);
         xLineColor = ta.getColor(R.styleable.LineChart_xLineColor, 0xff000000);
         yLineColor = ta.getColor(R.styleable.LineChart_yTextColor, 0xff000000);
-        showGrid = ta.getBoolean(R.styleable.LineChart_showGrid, false);
         gridColor = ta.getColor(R.styleable.LineChart_gridColor, 0xffff00ff);
-        vCount = ta.getInt(R.styleable.LineChart_vCount, 8);
         hCount = ta.getInt(R.styleable.LineChart_hCount, 5);
         xMax = ta.getInt(R.styleable.LineChart_xMax, 10);
         xMin = ta.getInt(R.styleable.LineChart_xMin, 0);
@@ -162,7 +153,6 @@ public class LineChart extends View {
         rightWith = ta.getDimension(R.styleable.LineChart_rightWith, 8f);
         bottomWith = ta.getDimension(R.styleable.LineChart_bottomWith, 16f);
         topWith = ta.getDimension(R.styleable.LineChart_topWith, 8f);
-        scaleLenth = ta.getDimension(R.styleable.LineChart_scaleLenth, 4f);
         innerCircleColor = ta.getColor(R.styleable.LineChart_innerCircleColor, 0xffffffff);
         outCircleColor = ta.getColor(R.styleable.LineChart_outCircleColor, 0xff000000);
         innerCircleRadius = ta.getDimension(R.styleable.LineChart_innerCircleRadius, 2f);
@@ -209,22 +199,8 @@ public class LineChart extends View {
         xTextPaint.setTextSize(xTextSize);
         xTextPaint.setAntiAlias(true);
 
-        yTextPaint = new Paint();
-        yTextPaint.setColor(yTextColor);
-        yTextPaint.setTextSize(yTextSize);
-        yTextPaint.setAntiAlias(true);
-
-        scalePaint = new Paint();
-        scalePaint.setColor(scaleColor);
-        scalePaint.setStrokeWidth(dip2px(1));
-
         xLinePaint = new Paint();
         xLinePaint.setColor(xLineColor);
-//        xLinePaint.setStrokeWidth(dip2px(1));
-
-        yLinePaint = new Paint();
-        yLinePaint.setColor(yLineColor);
-//        yLinePaint.setStrokeWidth(dip2px(1f));
 
         gridPaint = new Paint();
         gridPaint.setColor(gridColor);
@@ -259,7 +235,6 @@ public class LineChart extends View {
         scaleNodePaint.setColor(scaleNodeColor);
         scaleNodePaint.setAntiAlias(true);
 
-        yTextBounds = new Rect();
         xTextBounds = new Rect();
     }
 
@@ -277,6 +252,20 @@ public class LineChart extends View {
         list.addAll(suffixList);
         prefixCount = prefixList.size();
         suffixCount = suffixList.size();
+
+        ChartModel item;
+        int sum = 0;
+        int count = 0;
+        for (int i = 0; i < datas.size(); i++) {
+            item = datas.get(i);
+            if (item.getValue() == 0) {
+                continue;
+            }
+            sum += item.getValue();
+            count += 1;
+        }
+        avgValue = sum / count;
+
         postInvalidate();
     }
 
@@ -309,11 +298,11 @@ public class LineChart extends View {
         }
         indicatorOffSet = prefixCount * indicatorUnitLength;
 
-        selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
-        selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f);
-        selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f + 2 * unitHLenth, topWith);
+        selectedLinePath.moveTo(leftWith + (mWith - leftWith - rightWith) / 2f - 2 * unitHLenth, topWith);
+        selectedLinePath.lineTo(leftWith + (mWith - leftWith - rightWith) / 2f - unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(leftWith + (mWith - leftWith - rightWith) / 2f, topWith + unitHLenth / 5f);
+        selectedLinePath.lineTo(leftWith + (mWith - leftWith - rightWith) / 2f + unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(leftWith + (mWith - leftWith - rightWith) / 2f + 2 * unitHLenth, topWith);
 
         callBack(true);
 
@@ -368,19 +357,31 @@ public class LineChart extends View {
 
     private void drawLeft(Canvas canvas) {
         canvas.drawRect(0, 0, leftWith, mHeight, bgLeftPaint);
-        canvas.drawLine(leftWith, topWith, leftWith, mHeight - bottomWith, yLinePaint);
-        float unitLenth = (mHeight - topWith - bottomWith) / vCount;
-        for (int i = 1; i <= vCount; i++) {
-            String temp = (xMin + i * (xMax - xMin) / vCount) + "";
-            yTextPaint.getTextBounds(temp, 0, temp.length(), yTextBounds);
-            canvas.drawText(temp, leftWith - yTextBounds.width() - dip2px(4), mHeight - (bottomWith
-                    + i * unitLenth - yTextBounds.height() / 2f), yTextPaint);
-        }
+        maxValue = xMax;
+        minValue = 0;
+        String maxStr = String.valueOf(maxValue);
+        String minStr = String.valueOf(minValue);
+        String avgStr = String.valueOf(avgValue);
+        xTextPaint.setColor(xTextColor & 0x80ffffff);
+        float max = mHeight - bottomWith - xMax * (mHeight - topWith - bottomWith) / (xMax - xMin);
+        canvas.drawLine(leftWith, max, mWith - rightWith, max, gridPaint);
+        xTextPaint.getTextBounds(maxStr, 0, maxStr.length(), xTextBounds);
+        canvas.drawText(maxStr, mWith - rightWith + dip2px(10), max + xTextBounds.height() / 2f, xTextPaint);
+
+        float min = mHeight - bottomWith - 0 * (mHeight - topWith - bottomWith) / (xMax - xMin);
+        canvas.drawLine(leftWith, min, mWith - rightWith, min, gridPaint);
+        xTextPaint.getTextBounds(maxStr, 0, maxStr.length(), xTextBounds);
+        canvas.drawText(minStr, mWith - rightWith + dip2px(10), min + xTextBounds.height() / 2f, xTextPaint);
+
+        float avg = mHeight - bottomWith - avgValue * (mHeight - topWith - bottomWith) / (xMax - xMin);
+        canvas.drawLine(leftWith, avg, mWith - rightWith, avg, centerLinePaint);
+        xTextPaint.getTextBounds(avgStr, 0, avgStr.length(), xTextBounds);
+        canvas.drawText(avgStr, leftWith + dip2px(5), avg - xTextBounds.height(), xTextPaint);
     }
 
     private void drawContent(Canvas canvas) {
-        float unitVLenth = (mHeight - topWith - bottomWith) / vCount;
-        drawGrid(canvas, unitVLenth);
+//        float unitVLenth = (mHeight - topWith - bottomWith) / vCount;
+//        drawGrid(canvas, unitVLenth);
         if (null == list || list.size() <= 0) {
             return;
         }
@@ -439,14 +440,11 @@ public class LineChart extends View {
         //round
         int position = Math.round((offSet + moveOffSet) / unitHLenth);
 
-        if (list.get(position).getValue() == 0) {
-            return;
-        }
         float x = (mWith - leftWith - rightWith) / 2 + leftWith;
         float y;
 
         float y1 = mHeight - bottomWith - list.get(position).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
-        if (moveOffSet == 0 || (offSet + moveOffSet) == (list.size() - 1) * unitHLenth) {
+        if (list.get(position).getValue() > 0 && (moveOffSet == 0 || (offSet + moveOffSet) == (list.size() - 1) * unitHLenth)) {
             y = y1;
             canvas.drawCircle(x, y, scaleNodeRadius, scaleNodePaint);
         }
@@ -463,21 +461,6 @@ public class LineChart extends View {
         }
     }
 
-    private void drawGrid(Canvas canvas, float unitLenth) {
-        if (!showGrid) {
-            return;
-        }
-        int centerIndex = vCount / 2;
-        for (int i = 1; i <= vCount; i++) {
-            if (centerIndex == i) {
-                canvas.drawLine(leftWith, mHeight - bottomWith - i * unitLenth, mWith - rightWith,
-                        mHeight - bottomWith - i * unitLenth, centerLinePaint);
-            } else {
-                canvas.drawLine(leftWith, mHeight - bottomWith - i * unitLenth, mWith - rightWith,
-                        mHeight - bottomWith - i * unitLenth, gridPaint);
-            }
-        }
-    }
 
     private float xDown;
     private float moveOffSet;

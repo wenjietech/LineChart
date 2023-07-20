@@ -38,6 +38,8 @@
     <attr name="showXAxis" format="boolean"/>
     <attr name="showSelectedIndicator" format="boolean"/>
     <attr name="titleWidth" format="dimension"/>
+    <attr name="fillColorStart" format="color"/>
+    <attr name="fillColorEnd" format="color"/>
 
     <declare-styleable name="LineChart">
         <attr name="bgColor"/>
@@ -55,9 +57,7 @@
         <attr name="chartLineColor" />
         <attr name="chartLineWidth" />
         <attr name="scaleNodeColor" />
-        <attr name="showGrid" />
         <attr name="gridColor" />
-        <attr name="vCount" />
         <attr name="hCount" />
         <attr name="xMax" />
         <attr name="xMin" />
@@ -67,14 +67,13 @@
         <attr name="rightWith" />
         <attr name="bottomWith" />
         <attr name="topWith" />
-        <attr name="scaleLenth" />
         <attr name="innerCircleRadius" />
         <attr name="outCircleRadius" />
         <attr name="scaleNodeRadius" />
         <attr name="centerLineWidth" />
         <attr name="centerLineColor" />
-        <attr name="fillColorStart" format="color"/>
-        <attr name="fillColorEnd" format="color"/>
+        <attr name="fillColorStart" />
+        <attr name="fillColorEnd"/>
         <attr name="canScroll"/>
         <attr name="showXAxis"/>
         <attr name="showSelectedIndicator"/>
@@ -88,23 +87,16 @@
         <attr name="bgTopColor" />
         <attr name="bgBottomColor" />
         <attr name="xTextColor" />
-        <attr name="yTextColor" />
-        <attr name="scaleColor" />
-        <attr name="xLineColor" />
-        <attr name="yLineColor" />
         <attr name="innerCircleColor" />
         <attr name="outCircleColor" />
         <attr name="chartLineColor" />
         <attr name="chartLineWidth" />
         <attr name="scaleNodeColor" />
-        <attr name="showGrid" />
         <attr name="gridColor" />
-        <attr name="vCount" />
         <attr name="hCount" />
         <attr name="xMax" />
         <attr name="xMin" />
         <attr name="xTextSize" />
-        <attr name="yTextSize" />
         <attr name="leftWith" />
         <attr name="rightWith" />
         <attr name="bottomWith" />
@@ -146,6 +138,35 @@
         <attr name="topWith" />
         <attr name="centerLineWidth" />
         <attr name="centerLineColor" />
+    </declare-styleable>
+
+
+    <declare-styleable name="SleepLineChart">
+        <attr name="bgColor"/>
+        <attr name="bgLeftColor"/>
+        <attr name="bgRightColor"/>
+        <attr name="bgTopColor" />
+        <attr name="bgBottomColor" />
+        <attr name="xTextColor" />
+        <attr name="chartLineColor" />
+        <attr name="chartLineWidth" />
+        <attr name="scaleNodeColor" />
+        <attr name="gridColor" />
+        <attr name="xMax" />
+        <attr name="xMin" />
+        <attr name="xTextSize" />
+        <attr name="leftWith" />
+        <attr name="rightWith" />
+        <attr name="bottomWith" />
+        <attr name="topWith" />
+        <attr name="scaleNodeRadius" />
+        <attr name="centerLineWidth" />
+        <attr name="centerLineColor" />
+        <attr name="fillColorStart"/>
+        <attr name="fillColorEnd"/>
+        <attr name="showXAxis"/>
+        <attr name="showSelectedIndicator"/>
+        <attr name="titleWidth"/>
     </declare-styleable>
 
 </resources>

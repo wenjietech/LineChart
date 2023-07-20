@@ -25,28 +25,13 @@ public class SleepLineChart extends View {
     private int bgRightColor;
     private int bgTopColor;
     private int bgBottomColor;
-
     private int xTextColor;
-    private int yTextColor;
-    private int scaleColor;
-    private int xLineColor;
-    private int yLineColor;
-
-    private int innerCircleColor;
-    private int outCircleColor;
-
     private int chartLineColor;
     private float chartLineWidth = 10f;
 
     private int scaleNodeColor;
 
-    private boolean showGrid;
     private int gridColor;
-    private float scaleLenth;
-
-    private int vCount;
-    private int hCount;
-
     private int xMax;
     private int xMin;
 
@@ -54,15 +39,8 @@ public class SleepLineChart extends View {
     private float rightWith;
     private float bottomWith;
     private float topWith;
-
     private float xTextSize;
-    private float yTextSize;
-
-    private float innerCircleRadius;
-    private float outCircleRadius;
     private float scaleNodeRadius;
-
-
     private Paint bgPaint;
     private Paint bgLeftPaint;
     private Paint bgRightPaint;
@@ -70,19 +48,12 @@ public class SleepLineChart extends View {
     private Paint bgBottomPaint;
 
     private Paint xTextPaint;
-    private Paint yTextPaint;
-    private Paint scalePaint;
-    private Paint xLinePaint;
-    private Paint yLinePaint;
     private Paint gridPaint;
     private Paint centerLinePaint;
     private int centerLineColor;
     private int fillColorStart;
     private int fillColorEnd;
     private float centerLineWidth;
-
-    private Paint innerCirclePaint;
-    private Paint outCirclePaint;
 
     private Paint chartLinePaint;
     private Paint chartLineFillPaint;
@@ -97,11 +68,9 @@ public class SleepLineChart extends View {
     private int mWith;
     private int mHeight;
 
-    private Rect yTextBounds;
     private Rect xTextBounds;
     private SleepModel sleepModel;
     private List<ChartModel> list = new ArrayList<>();
-    private boolean canScroll = true;
     private boolean showXAxis = true;
     private int interval = 0;
     private int maxValue;
@@ -131,44 +100,30 @@ public class SleepLineChart extends View {
 
 
     private void init(AttributeSet attrs) {
-        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.LineChart);
-        bgColor = ta.getColor(R.styleable.LineChart_bgColor, 0xffffffff);
-        bgLeftColor = ta.getColor(R.styleable.LineChart_bgLeftColor, 0xffffffff);
-        bgRightColor = ta.getColor(R.styleable.LineChart_bgRightColor, 0xfffffff);
-        bgTopColor = ta.getColor(R.styleable.LineChart_bgTopColor, 0xffffffff);
-        bgBottomColor = ta.getColor(R.styleable.LineChart_bgBottomColor, 0xffffffff);
-        xTextColor = ta.getColor(R.styleable.LineChart_xTextColor, 0xff000000);
-        yTextColor = ta.getColor(R.styleable.LineChart_yTextColor, 0xff000000);
-        scaleColor = ta.getColor(R.styleable.LineChart_scaleColor, 0xff000000);
-        xLineColor = ta.getColor(R.styleable.LineChart_xLineColor, 0xff000000);
-        yLineColor = ta.getColor(R.styleable.LineChart_yTextColor, 0xff000000);
-        showGrid = ta.getBoolean(R.styleable.LineChart_showGrid, false);
-        gridColor = ta.getColor(R.styleable.LineChart_gridColor, 0xffff00ff);
-        vCount = ta.getInt(R.styleable.LineChart_vCount, 8);
-        hCount = ta.getInt(R.styleable.LineChart_hCount, 5);
-        xMax = ta.getInt(R.styleable.LineChart_xMax, 10);
-        xMin = ta.getInt(R.styleable.LineChart_xMin, 0);
-        xTextSize = ta.getDimension(R.styleable.LineChart_xTextSize, 8f);
-        yTextSize = ta.getDimension(R.styleable.LineChart_yTextSize, 8f);
-        leftWith = ta.getDimension(R.styleable.LineChart_leftWith, 16f);
-        rightWith = ta.getDimension(R.styleable.LineChart_rightWith, 8f);
-        bottomWith = ta.getDimension(R.styleable.LineChart_bottomWith, 16f);
-        topWith = ta.getDimension(R.styleable.LineChart_topWith, 8f);
-        scaleLenth = ta.getDimension(R.styleable.LineChart_scaleLenth, 4f);
-        innerCircleColor = ta.getColor(R.styleable.LineChart_innerCircleColor, 0xffffffff);
-        outCircleColor = ta.getColor(R.styleable.LineChart_outCircleColor, 0xff000000);
-        innerCircleRadius = ta.getDimension(R.styleable.LineChart_innerCircleRadius, 2f);
-        outCircleRadius = ta.getDimension(R.styleable.LineChart_outCircleRadius, 0f);
-        chartLineColor = ta.getColor(R.styleable.LineChart_chartLineColor, 0xff000000);
-        chartLineWidth = ta.getDimension(R.styleable.LineChart_chartLineWidth, 10f);
-        scaleNodeColor = ta.getColor(R.styleable.LineChart_scaleNodeColor, 0xff000000);
-        scaleNodeRadius = ta.getDimension(R.styleable.LineChart_scaleNodeRadius, 3f);
-        centerLineWidth = ta.getDimension(R.styleable.LineChart_centerLineWidth, 10f);
-        centerLineColor = ta.getColor(R.styleable.LineChart_centerLineColor, 0xff000000);
-        fillColorStart = ta.getColor(R.styleable.LineChart_fillColorStart, 0x80ffffff);
-        fillColorEnd = ta.getColor(R.styleable.LineChart_fillColorEnd, 0x00000000);
-        canScroll = ta.getBoolean(R.styleable.LineChart_canScroll, true);
-        showXAxis = ta.getBoolean(R.styleable.LineChart_showXAxis, true);
+        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.SleepLineChart);
+        bgColor = ta.getColor(R.styleable.SleepLineChart_bgColor, 0xffffffff);
+        bgLeftColor = ta.getColor(R.styleable.SleepLineChart_bgLeftColor, 0xffffffff);
+        bgRightColor = ta.getColor(R.styleable.SleepLineChart_bgRightColor, 0xfffffff);
+        bgTopColor = ta.getColor(R.styleable.SleepLineChart_bgTopColor, 0xffffffff);
+        bgBottomColor = ta.getColor(R.styleable.SleepLineChart_bgBottomColor, 0xffffffff);
+        xTextColor = ta.getColor(R.styleable.SleepLineChart_xTextColor, 0xff000000);
+        gridColor = ta.getColor(R.styleable.SleepLineChart_gridColor, 0xffff00ff);
+        xMax = ta.getInt(R.styleable.SleepLineChart_xMax, 10);
+        xMin = ta.getInt(R.styleable.SleepLineChart_xMin, 0);
+        xTextSize = ta.getDimension(R.styleable.SleepLineChart_xTextSize, 8f);
+        leftWith = ta.getDimension(R.styleable.SleepLineChart_leftWith, 16f);
+        rightWith = ta.getDimension(R.styleable.SleepLineChart_rightWith, 8f);
+        bottomWith = ta.getDimension(R.styleable.SleepLineChart_bottomWith, 16f);
+        topWith = ta.getDimension(R.styleable.SleepLineChart_topWith, 8f);
+        chartLineColor = ta.getColor(R.styleable.SleepLineChart_chartLineColor, 0xff000000);
+        chartLineWidth = ta.getDimension(R.styleable.SleepLineChart_chartLineWidth, 10f);
+        scaleNodeColor = ta.getColor(R.styleable.SleepLineChart_scaleNodeColor, 0xff000000);
+        scaleNodeRadius = ta.getDimension(R.styleable.SleepLineChart_scaleNodeRadius, 3f);
+        centerLineWidth = ta.getDimension(R.styleable.SleepLineChart_centerLineWidth, 10f);
+        centerLineColor = ta.getColor(R.styleable.SleepLineChart_centerLineColor, 0xff000000);
+        fillColorStart = ta.getColor(R.styleable.SleepLineChart_fillColorStart, 0x80ffffff);
+        fillColorEnd = ta.getColor(R.styleable.SleepLineChart_fillColorEnd, 0x00000000);
+        showXAxis = ta.getBoolean(R.styleable.SleepLineChart_showXAxis, true);
         ta.recycle();
         initPaint();
 
@@ -194,23 +149,6 @@ public class SleepLineChart extends View {
         xTextPaint.setTextSize(xTextSize);
         xTextPaint.setAntiAlias(true);
 
-        yTextPaint = new Paint();
-        yTextPaint.setColor(yTextColor);
-        yTextPaint.setTextSize(yTextSize);
-        yTextPaint.setAntiAlias(true);
-
-        scalePaint = new Paint();
-        scalePaint.setColor(scaleColor);
-        scalePaint.setStrokeWidth(dip2px(1));
-
-        xLinePaint = new Paint();
-        xLinePaint.setColor(xLineColor);
-//        xLinePaint.setStrokeWidth(dip2px(1));
-
-        yLinePaint = new Paint();
-        yLinePaint.setColor(yLineColor);
-//        yLinePaint.setStrokeWidth(dip2px(1f));
-
         gridPaint = new Paint();
         gridPaint.setColor(gridColor);
 
@@ -219,14 +157,6 @@ public class SleepLineChart extends View {
         centerLinePaint.setStrokeWidth(centerLineWidth);
         centerLinePaint.setStyle(Paint.Style.STROKE);
         centerLinePaint.setPathEffect(new DashPathEffect(new float[]{5, 10}, 0));
-
-        innerCirclePaint = new Paint();
-        innerCirclePaint.setColor(innerCircleColor);
-        innerCirclePaint.setAntiAlias(true);
-
-        outCirclePaint = new Paint();
-        outCirclePaint.setColor(outCircleColor);
-        outCirclePaint.setAntiAlias(true);
 
         chartLinePaint = new Paint();
         chartLinePaint.setStrokeWidth(chartLineWidth);
@@ -244,7 +174,6 @@ public class SleepLineChart extends View {
         scaleNodePaint.setColor(scaleNodeColor);
         scaleNodePaint.setAntiAlias(true);
 
-        yTextBounds = new Rect();
         xTextBounds = new Rect();
     }
 
@@ -261,10 +190,15 @@ public class SleepLineChart extends View {
         interval = (int) (list.size() / 4f);
         ChartModel item;
         int sum = 0;
+        int count = 0;
         for (int i = 0; i < list.size(); i++) {
             item = list.get(i);
+            if (item.getValue() == 0) {
+                continue;
+            }
             sum += item.getValue();
-            if (i == 0) {
+            count += 1;
+            if (maxValue == 0 && minValue == 0) {
                 lastMinValueIndex = i;
                 maxValue = item.getValue();
                 minValue = item.getValue();
@@ -277,8 +211,7 @@ public class SleepLineChart extends View {
                 minValue = item.getValue();
             }
         }
-        Log.d("TAG", "lastMinValueIndex=" + lastMinValueIndex);
-        avgValue = sum / list.size();
+        avgValue = sum / count;
         postInvalidate();
     }
 
@@ -363,8 +296,6 @@ public class SleepLineChart extends View {
     }
 
     private void drawContent(Canvas canvas) {
-        float unitVLenth = (mHeight - topWith - bottomWith) / vCount;
-        drawGrid(canvas, unitVLenth);
         if (null == list || list.size() <= 0) {
             return;
         }
@@ -393,7 +324,7 @@ public class SleepLineChart extends View {
                 }
             }
 
-            Log.d("TAG", "interval=" + interval);
+//            Log.d("TAG", "interval=" + interval);
             if (showXAxis && i % interval == 0 && i > 0 && i < 4 * interval) {
                 String xText = list.get(i).getIndex();
                 xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
@@ -406,23 +337,6 @@ public class SleepLineChart extends View {
             }
         }
     }
-
-    private void drawGrid(Canvas canvas, float unitLenth) {
-        if (!showGrid) {
-            return;
-        }
-        int centerIndex = vCount / 2;
-        for (int i = 1; i <= vCount; i++) {
-            if (centerIndex == i) {
-                canvas.drawLine(leftWith, mHeight - bottomWith - i * unitLenth, mWith - rightWith,
-                        mHeight - bottomWith - i * unitLenth, centerLinePaint);
-            } else {
-                canvas.drawLine(leftWith, mHeight - bottomWith - i * unitLenth, mWith - rightWith,
-                        mHeight - bottomWith - i * unitLenth, gridPaint);
-            }
-        }
-    }
-
 
     private int dip2px(float dpValue) {
         float scale = getContext().getResources().getDisplayMetrics().density;

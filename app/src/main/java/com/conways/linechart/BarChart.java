@@ -29,18 +29,12 @@ public class BarChart extends View {
     private int bgBottomColor;
 
     private int xTextColor;
-    private int yTextColor;
-    private int scaleColor;
-    private int xLineColor;
-    private int yLineColor;
 
     private int chartLineColor;
     private float chartLineWidth = 10f;
 
-    private boolean showGrid;
     private int gridColor;
 
-    private int vCount;
     private int hCount;
 
     private int xMax;
@@ -52,7 +46,6 @@ public class BarChart extends View {
     private float topWith;
 
     private float xTextSize;
-    private float yTextSize;
 
     private Paint bgPaint;
     private Paint bgLeftPaint;
@@ -63,10 +56,6 @@ public class BarChart extends View {
     private Paint bgBottomPaint;
 
     private Paint xTextPaint;
-    private Paint yTextPaint;
-    private Paint scalePaint;
-    private Paint xLinePaint;
-    private Paint yLinePaint;
     private Paint gridPaint;
     private Paint centerLinePaint;
     private int centerLineColor;
@@ -88,14 +77,15 @@ public class BarChart extends View {
     private float offSet;
     private float indicatorOffSet;
 
-    private Rect yTextBounds;
     private Rect xTextBounds;
 
     private List<ChartModel> list = new ArrayList<>();
     private int prefixCount;
     private int suffixCount;
     private float titleWidth = 0f;
-
+    private int maxValue;
+    private int minValue;
+    private int avgValue;
 
     public BarChart(Context context) {
         super(context);
@@ -124,18 +114,11 @@ public class BarChart extends View {
         bgTopColor = ta.getColor(R.styleable.BarChart_bgTopColor, 0xffffffff);
         bgBottomColor = ta.getColor(R.styleable.BarChart_bgBottomColor, 0xffffffff);
         xTextColor = ta.getColor(R.styleable.BarChart_xTextColor, 0xff000000);
-        yTextColor = ta.getColor(R.styleable.BarChart_yTextColor, 0xff000000);
-        scaleColor = ta.getColor(R.styleable.BarChart_scaleColor, 0xff000000);
-        xLineColor = ta.getColor(R.styleable.BarChart_xLineColor, 0xff000000);
-        yLineColor = ta.getColor(R.styleable.BarChart_yTextColor, 0xff000000);
-        showGrid = ta.getBoolean(R.styleable.BarChart_showGrid, false);
         gridColor = ta.getColor(R.styleable.BarChart_gridColor, 0xffff00ff);
-        vCount = ta.getInt(R.styleable.BarChart_vCount, 8);
         hCount = ta.getInt(R.styleable.BarChart_hCount, 5);
         xMax = ta.getInt(R.styleable.BarChart_xMax, 10);
         xMin = ta.getInt(R.styleable.BarChart_xMin, 0);
         xTextSize = ta.getDimension(R.styleable.BarChart_xTextSize, 8f);
-        yTextSize = ta.getDimension(R.styleable.BarChart_yTextSize, 8f);
         leftWith = ta.getDimension(R.styleable.BarChart_leftWith, 16f);
         rightWith = ta.getDimension(R.styleable.BarChart_rightWith, 8f);
         bottomWith = ta.getDimension(R.styleable.BarChart_bottomWith, 16f);
@@ -146,7 +129,7 @@ public class BarChart extends View {
         centerLineColor = ta.getColor(R.styleable.BarChart_centerLineColor, 0xff000000);
         lineNormalColor = ta.getColor(R.styleable.BarChart_lineNormalColor, 0x80ffffff);
         lineSelectColor = ta.getColor(R.styleable.BarChart_lineSelectColor, 0x00000000);
-        titleWidth = ta.getDimension(R.styleable.LineChart_titleWidth, 0f);
+        titleWidth = ta.getDimension(R.styleable.BarChart_titleWidth, 0f);
         ta.recycle();
         initPaint();
 
@@ -174,23 +157,6 @@ public class BarChart extends View {
         xTextPaint.setTextSize(xTextSize);
         xTextPaint.setAntiAlias(true);
 
-        yTextPaint = new Paint();
-        yTextPaint.setColor(yTextColor);
-        yTextPaint.setTextSize(yTextSize);
-        yTextPaint.setAntiAlias(true);
-
-        scalePaint = new Paint();
-        scalePaint.setColor(scaleColor);
-        scalePaint.setStrokeWidth(dip2px(1));
-
-        xLinePaint = new Paint();
-        xLinePaint.setColor(xLineColor);
-//        xLinePaint.setStrokeWidth(dip2px(1));
-
-        yLinePaint = new Paint();
-        yLinePaint.setColor(yLineColor);
-//        yLinePaint.setStrokeWidth(dip2px(1f));
-
         gridPaint = new Paint();
         gridPaint.setColor(gridColor);
 
@@ -208,7 +174,6 @@ public class BarChart extends View {
 
         rectF = new RectF();
 
-        yTextBounds = new Rect();
         xTextBounds = new Rect();
     }
 
@@ -226,6 +191,21 @@ public class BarChart extends View {
         list.addAll(suffixList);
         prefixCount = prefixList.size();
         suffixCount = suffixList.size();
+
+        ChartModel item;
+        int sum = 0;
+        int count = 0;
+        for (int i = 0; i < datas.size(); i++) {
+            item = datas.get(i);
+            if (item.getValue() == 0) {
+                continue;
+            }
+            sum += item.getValue();
+            count += 1;
+        }
+        avgValue = sum / count;
+
+
         postInvalidate();
     }
 
@@ -255,11 +235,12 @@ public class BarChart extends View {
         }
         indicatorOffSet = prefixCount * indicatorUnitLength;
 
-        selectedLinePath.moveTo(mWith / 2f - 2 * unitHLenth, topWith);
-        selectedLinePath.lineTo(mWith / 2f - unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f, topWith + unitHLenth / 5f );
-        selectedLinePath.lineTo(mWith / 2f + unitHLenth / 5f, topWith);
-        selectedLinePath.lineTo(mWith / 2f + 2* unitHLenth, topWith);
+        selectedLinePath.moveTo(leftWith + (mWith - leftWith - rightWith) / 2f - 2 * unitHLenth, topWith);
+        selectedLinePath.lineTo(leftWith + (mWith - leftWith - rightWith) / 2f - unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(leftWith + (mWith - leftWith - rightWith) / 2f, topWith + unitHLenth / 5f);
+        selectedLinePath.lineTo(leftWith + (mWith - leftWith - rightWith) / 2f + unitHLenth / 5f, topWith);
+        selectedLinePath.lineTo(leftWith + (mWith - leftWith - rightWith) / 2f + 2 * unitHLenth, topWith);
+
     }
 
     @Override
@@ -295,28 +276,39 @@ public class BarChart extends View {
 
     private void drawBottom(Canvas canvas) {
         canvas.drawRect(0, mHeight - bottomWith, mWith, mHeight, bgBottomPaint);
-        canvas.drawLine(leftWith, mHeight - bottomWith, mWith - rightWith, mHeight - bottomWith,
-                xLinePaint);
+//        canvas.drawLine(leftWith, mHeight - bottomWith, mWith - rightWith, mHeight - bottomWith,
+//                xLinePaint);
     }
 
 
     private void drawLeft(Canvas canvas) {
         canvas.drawRect(0, 0, leftWith, mHeight, bgLeftPaint);
-        canvas.drawLine(leftWith, topWith, leftWith, mHeight - bottomWith, yLinePaint);
-        float unitLenth = (mHeight - topWith - bottomWith) / vCount;
-        for (int i = 1; i <= vCount; i++) {
-//            canvas.drawLine(leftWith, mHeight - bottomWith - i * unitLenth, ((xMin + i * (xMax - xMin) / vCount)) % 5 == 0 ? (leftWith + 2 * scaleLenth) :
-//                    (leftWith + scaleLenth), mHeight - bottomWith - i * unitLenth, scalePaint);
-            String temp = (xMin + i * (xMax - xMin) / vCount) + "";
-            yTextPaint.getTextBounds(temp, 0, temp.length(), yTextBounds);
-            canvas.drawText(temp, leftWith - yTextBounds.width() - dip2px(4), mHeight - (bottomWith
-                    + i * unitLenth - yTextBounds.height() / 2f), yTextPaint);
-        }
+
+        maxValue = xMax;
+        minValue = 0;
+        String maxStr = String.valueOf(maxValue);
+        String minStr = String.valueOf(minValue);
+        String avgStr = String.valueOf(avgValue);
+        xTextPaint.setColor(xTextColor & 0x80ffffff);
+        float max = mHeight - bottomWith - xMax * (mHeight - topWith - bottomWith) / (xMax - xMin);
+        canvas.drawLine(leftWith, max, mWith - rightWith, max, gridPaint);
+        xTextPaint.getTextBounds(maxStr, 0, maxStr.length(), xTextBounds);
+        canvas.drawText(maxStr, mWith - rightWith + dip2px(10), max + xTextBounds.height() / 2f, xTextPaint);
+
+        float min = mHeight - bottomWith - 0 * (mHeight - topWith - bottomWith) / (xMax - xMin);
+        canvas.drawLine(leftWith, min, mWith - rightWith, min, gridPaint);
+        xTextPaint.getTextBounds(maxStr, 0, maxStr.length(), xTextBounds);
+        canvas.drawText(minStr, mWith - rightWith + dip2px(10), min + xTextBounds.height() / 2f, xTextPaint);
+
+        float avg = mHeight - bottomWith - avgValue * (mHeight - topWith - bottomWith) / (xMax - xMin);
+        canvas.drawLine(leftWith, avg, mWith - rightWith, avg, centerLinePaint);
+        xTextPaint.getTextBounds(avgStr, 0, avgStr.length(), xTextBounds);
+        canvas.drawText(avgStr, leftWith + dip2px(5), avg - xTextBounds.height(), xTextPaint);
     }
 
     private void drawContent(Canvas canvas) {
-        float unitVLenth = (mHeight - topWith - bottomWith) / vCount;
-        drawGrid(canvas, unitVLenth);
+//        float unitVLenth = (mHeight - topWith - bottomWith) / vCount;
+//        drawGrid(canvas, unitVLenth);
         if (null == list || list.size() <= 0) {
             return;
         }
@@ -355,9 +347,6 @@ public class BarChart extends View {
         }
         int position = Math.round((offSet + moveOffSet) / unitHLenth);
 
-        if (list.get(position).getValue() == 0) {
-            return;
-        }
         float x = (mWith - leftWith - rightWith) / 2 + leftWith;
         float y;
         float temp = (offSet + moveOffSet) % unitHLenth;
@@ -381,30 +370,17 @@ public class BarChart extends View {
             xTextPaint.getTextBounds(title, 0, title.length(), xTextBounds);
             canvas.drawText(title, xInd - xTextBounds.width() / 2f, topWith / 2 + xTextBounds.height() / 2f, xTextPaint);
 
-            rectF.left = x - chartLineWidth / 2f;
-            rectF.top = y;
-            rectF.right = x + chartLineWidth / 2f;
-            rectF.bottom = mHeight - bottomWith - chartLineWidth / 2f;
-            chartLinePaint.setColor(lineSelectColor);
-            canvas.drawRoundRect(rectF, chartLineWidth / 2f, chartLineWidth / 2f, chartLinePaint);
-        }
-    }
-
-    private void drawGrid(Canvas canvas, float unitLenth) {
-        if (!showGrid) {
-            return;
-        }
-        int centerIndex = vCount / 2;
-        for (int i = 1; i <= vCount; i++) {
-            if (centerIndex == i) {
-                canvas.drawLine(leftWith, mHeight - bottomWith - i * unitLenth, mWith - rightWith,
-                        mHeight - bottomWith - i * unitLenth, centerLinePaint);
-            } else {
-                canvas.drawLine(leftWith, mHeight - bottomWith - i * unitLenth, mWith - rightWith,
-                        mHeight - bottomWith - i * unitLenth, gridPaint);
+            if (list.get(position).getValue() > 0) {
+                rectF.left = x - chartLineWidth / 2f;
+                rectF.top = y;
+                rectF.right = x + chartLineWidth / 2f;
+                rectF.bottom = mHeight - bottomWith - chartLineWidth / 2f;
+                chartLinePaint.setColor(lineSelectColor);
+                canvas.drawRoundRect(rectF, chartLineWidth / 2f, chartLineWidth / 2f, chartLinePaint);
             }
         }
     }
+
 
     private float xDown;
     private float moveOffSet;
