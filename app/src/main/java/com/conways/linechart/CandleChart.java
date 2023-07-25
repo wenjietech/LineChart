@@ -271,14 +271,20 @@ public class CandleChart extends View {
             float x = offSet + moveOffSet + (mWith - leftWith - rightWith) + leftWith - ((list.size() - i - 1) * 3) * chartLineWidth - chartLineWidth;
             float y = (mHeight - bottomWith) * 2 / 3f - (model.getLength() * (mHeight - topWith - bottomWith) / (xMax - xMin)) / 2f;
 
-            if (i % 48 == 0) {
+            if ((i + 1) % 48 == 0 || i == 0) {
                 String xText = model.getIndex();
                 xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
                 xTextPaint.setColor(xTextColor & 0x80ffffff);
                 xTextPaint.setColor(xTextColor);
-                canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+                if (i == 0) {
+                    canvas.drawText(xText, x + dip2px(5), mHeight - bottomWith / 4, xTextPaint);
+                } if( i == list.size() - 1){
+                    canvas.drawText(xText, x - xTextBounds.width() - dip2px(5), mHeight - bottomWith / 4, xTextPaint);
+                }else {
+                    canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+                }
                 xTextPaint.setColor(Color.parseColor("#FF7A7977"));
-                canvas.drawLine(x, (mHeight - bottomWith) / 3f, x, (mHeight - bottomWith), xTextPaint);
+                canvas.drawLine(x, topWith, x, mHeight - bottomWith, xTextPaint);
             }
 
 
