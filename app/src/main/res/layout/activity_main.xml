@@ -7,8 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginBottom="50dp">
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView"
@@ -48,13 +48,13 @@
             lineChart:scaleNodeColor="#FFFFFF"
             lineChart:scaleNodeRadius="6dp"
             lineChart:showGrid="true"
+            lineChart:titleWidth="150dp"
             lineChart:topWith="40dp"
             lineChart:xLineColor="#80FFFFFF"
             lineChart:xMax="100"
             lineChart:xMin="0"
             lineChart:xTextColor="#FFFFFF"
-            lineChart:xTextSize="16sp"
-            lineChart:titleWidth="150dp"/>
+            lineChart:xTextSize="16sp" />
 
 
         <com.conways.linechart.BarChart
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
-            android:visibility="visible"
+            android:visibility="gone"
             lineChart:bgBottomColor="#292929"
             lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"
@@ -84,13 +84,13 @@
             lineChart:scaleColor="#ff000000"
             lineChart:scaleNodeColor="#FFFFFF"
             lineChart:scaleNodeRadius="6dp"
+            lineChart:titleWidth="150dp"
             lineChart:topWith="40dp"
             lineChart:xLineColor="#80FFFFFF"
             lineChart:xMax="100"
             lineChart:xMin="0"
             lineChart:xTextColor="#FFFFFF"
-            lineChart:xTextSize="16sp"
-            lineChart:titleWidth="150dp"/>
+            lineChart:xTextSize="16sp" />
 
 
         <com.conways.linechart.LineChart
@@ -98,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
-            android:visibility="visible"
+            android:visibility="gone"
             lineChart:bgBottomColor="#292929"
             lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"
@@ -131,7 +131,7 @@
             lineChart:xMax="100"
             lineChart:xMin="0"
             lineChart:xTextColor="#FFFFFF"
-            lineChart:xTextSize="16sp"/>
+            lineChart:xTextSize="16sp" />
 
 
         <com.conways.linechart.CandleChart
@@ -139,6 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
+            android:visibility="gone"
             lineChart:bgBottomColor="#292929"
             lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"

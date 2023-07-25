@@ -277,12 +277,12 @@ public class SleepLineChart extends View {
         String maxStr = String.valueOf(maxValue);
         String minStr = String.valueOf(minValue);
         String avgStr = String.valueOf(avgValue);
-        float max = mHeight - bottomWith - (maxValue + 20) * (mHeight - topWith - bottomWith) / (xMax - xMin);
+        float max = mHeight - bottomWith - (maxValue + 0.2f * xMax) * (mHeight - topWith - bottomWith) / (xMax - xMin);
         canvas.drawLine(leftWith, max, mWith - rightWith, max, gridPaint);
         xTextPaint.getTextBounds(maxStr, 0, maxStr.length(), xTextBounds);
         canvas.drawText(maxStr, mWith - rightWith + dip2px(10), max + xTextBounds.height() / 2f, xTextPaint);
 
-        float min = mHeight - bottomWith - (minValue - 20) * (mHeight - topWith - bottomWith) / (xMax - xMin);
+        float min = mHeight - bottomWith - (minValue - 0.2f * xMax) * (mHeight - topWith - bottomWith) / (xMax - xMin);
         canvas.drawLine(leftWith, min, mWith - rightWith, min, gridPaint);
         xTextPaint.getTextBounds(maxStr, 0, maxStr.length(), xTextBounds);
         canvas.drawText(minStr, mWith - rightWith + dip2px(10), min + xTextBounds.height() / 2f, xTextPaint);
