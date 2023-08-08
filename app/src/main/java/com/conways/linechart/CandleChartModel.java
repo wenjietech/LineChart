@@ -6,6 +6,7 @@ public class CandleChartModel extends ChartModel{
     private int color;
     private String markText;
     private Type type;
+    private boolean highlight;
 
     public int getLength() {
         return length;
@@ -37,6 +38,14 @@ public class CandleChartModel extends ChartModel{
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public boolean isHighlight() {
+        return highlight;
+    }
+
+    public void setHighlight(boolean highlight) {
+        this.highlight = highlight;
     }
 
     enum Type{

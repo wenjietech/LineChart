@@ -278,9 +278,10 @@ public class CandleChart extends View {
                 xTextPaint.setColor(xTextColor);
                 if (i == 0) {
                     canvas.drawText(xText, x + dip2px(5), mHeight - bottomWith / 4, xTextPaint);
-                } if( i == list.size() - 1){
+                }
+                if (i == list.size() - 1) {
                     canvas.drawText(xText, x - xTextBounds.width() - dip2px(5), mHeight - bottomWith / 4, xTextPaint);
-                }else {
+                } else {
                     canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
                 }
                 xTextPaint.setColor(Color.parseColor("#FF7A7977"));
@@ -294,6 +295,32 @@ public class CandleChart extends View {
             rectF.bottom = y + (model.getLength() * (mHeight - topWith - bottomWith) / (xMax - xMin));
             chartLinePaint.setColor(model.getColor());
             canvas.drawRoundRect(rectF, chartLineWidth / 2f, chartLineWidth / 2f, chartLinePaint);
+
+            if (model.isHighlight()) {
+                float radius = dip2px(2);
+                rectF.left = x - chartLineWidth / 2f;
+                rectF.top = topWith + radius * 4;
+                rectF.right = x + chartLineWidth / 2f;
+                rectF.bottom = mHeight - bottomWith;
+                chartLinePaint.setColor(Color.WHITE);
+                canvas.drawRoundRect(rectF, chartLineWidth / 2f, chartLineWidth / 2f, chartLinePaint);
+
+
+                canvas.drawCircle(x, topWith + radius * 2, dip2px(2), chartLinePaint);
+                String xText = model.getIndex();
+                xTextPaint.getTextBounds(xText, 0, xText.length(), xTextBounds);
+
+                rectF.left = x - xTextBounds.width() / 2f - dip2px(5);
+                rectF.top = mHeight - bottomWith / 4 - xTextBounds.height()- dip2px(4);
+                rectF.right = x + xTextBounds.width() / 2f + dip2px(5);
+                rectF.bottom = mHeight - bottomWith / 4 + dip2px(4);
+                chartLinePaint.setColor(Color.parseColor("#40ffffff"));
+                canvas.drawRoundRect(rectF, dip2px(2), dip2px(2), chartLinePaint);
+
+                xTextPaint.setColor(Color.WHITE);
+                canvas.drawText(xText, x - xTextBounds.width() / 2f, mHeight - bottomWith / 4, xTextPaint);
+            }
+
             if (!TextUtils.isEmpty(model.getMarkText())) {
                 markPaint.setColor(Color.parseColor("#80000000"));
                 markPaint.setStyle(Paint.Style.FILL);

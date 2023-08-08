@@ -139,7 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
-            android:visibility="gone"
+            android:visibility="visible"
             lineChart:bgBottomColor="#292929"
             lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"

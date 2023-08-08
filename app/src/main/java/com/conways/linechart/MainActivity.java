@@ -99,23 +99,30 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 288; i++) {
             CandleChartModel chartModel = new CandleChartModel();
             chartModel.setIndex(String.valueOf(i));
-            if (i % 5 == 0) {
-                chartModel.setLength((int) (candleChart.getMax() * 0.2));
-                chartModel.setColor(Color.parseColor("#FFBAA76D"));
-                chartModel.setType(CandleChartModel.Type.LOW);
-            } else if (i % 4 == 0) {
-                chartModel.setLength((int) (candleChart.getMax() * 0.3));
-                chartModel.setColor(Color.parseColor("#FFFFEB3B"));
-                chartModel.setType(CandleChartModel.Type.MEDIUM);
-            } else if (i % 3 == 0) {
-                chartModel.setLength((int) (candleChart.getMax() * 0.4));
-                chartModel.setColor(Color.parseColor("#FFffffff"));
-                chartModel.setMarkText("2");
-                chartModel.setType(CandleChartModel.Type.HIGH);
-            } else {
+            if(i == 253){
                 chartModel.setLength((int) (candleChart.getMax() * 0.1));
                 chartModel.setColor(Color.parseColor("#545353"));
                 chartModel.setType(CandleChartModel.Type.INACTIVE);
+                chartModel.setHighlight(true);
+            }else{
+                if (i % 5 == 0) {
+                    chartModel.setLength((int) (candleChart.getMax() * 0.2));
+                    chartModel.setColor(Color.parseColor("#FFBAA76D"));
+                    chartModel.setType(CandleChartModel.Type.LOW);
+                } else if (i % 4 == 0) {
+                    chartModel.setLength((int) (candleChart.getMax() * 0.3));
+                    chartModel.setColor(Color.parseColor("#FFFFEB3B"));
+                    chartModel.setType(CandleChartModel.Type.MEDIUM);
+                } else if (i % 3 == 0) {
+                    chartModel.setLength((int) (candleChart.getMax() * 0.4));
+                    chartModel.setColor(Color.parseColor("#FFffffff"));
+                    chartModel.setMarkText("2");
+                    chartModel.setType(CandleChartModel.Type.HIGH);
+                } else {
+                    chartModel.setLength((int) (candleChart.getMax() * 0.1));
+                    chartModel.setColor(Color.parseColor("#545353"));
+                    chartModel.setType(CandleChartModel.Type.INACTIVE);
+                }
             }
 //            chartModel.setLength((int) (candleChart.getMax() * 0.4));
             candleChartModelList.add(chartModel);
