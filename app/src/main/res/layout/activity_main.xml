@@ -24,7 +24,7 @@
             android:id="@+id/lineChart"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:visibility="visible"
+            android:visibility="gone"
             lineChart:bgBottomColor="#292929"
             lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"
@@ -139,7 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
-            android:visibility="visible"
+            android:visibility="gone"
             lineChart:bgBottomColor="#292929"
             lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"
@@ -177,6 +177,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
+            android:visibility="gone"
             lineChart:bgBottomColor="#292929"
             lineChart:bgColor="#292929"
             lineChart:bgLeftColor="#292929"
@@ -210,6 +211,55 @@
             lineChart:xTextSize="16sp"
             lineChart:yLineColor="#00FFFFFF"
             lineChart:yTextSize="12sp" />
+
+
+        <com.conways.linechart.CombineLineChart
+            android:id="@+id/combineChart"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="50dp"
+            lineChart:bgBottomColor="#292929"
+            lineChart:bgColor="#292929"
+            lineChart:bgLeftColor="#292929"
+            lineChart:bgRightColor="#292929"
+            lineChart:bgTopColor="#292929"
+            lineChart:bottomWith="30dp"
+            lineChart:chartLineColor="#FFFFFF"
+            lineChart:chartLineWidth="2dp"
+            lineChart:gridColor="#80FFFFFF"
+            lineChart:leftWith="20dp"
+            lineChart:rightWith="20dp"
+            lineChart:topWith="50dp"
+            lineChart:xMax="100"
+            lineChart:xMin="0"
+            lineChart:xTextColor="#FFFFFF"
+            lineChart:xTextSize="16sp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_high"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="High" />
+
+            <Button
+                android:id="@+id/btn_med"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Med" />
+
+            <Button
+                android:id="@+id/btn_low"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Low" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
         <com.conways.linechart.CustomView
