@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 highlights.add(50);
                 highlights.add(74);
                 highlights.add(75);
-                combineLineChart.updateHighlight(highlights, Color.RED);
+                combineLineChart.updateHighlight(highlights, Color.WHITE);
             }
         });
         btnMed.setOnClickListener(new View.OnClickListener() {

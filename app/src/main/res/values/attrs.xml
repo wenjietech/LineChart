@@ -176,7 +176,10 @@
         <attr name="bgTopColor" />
         <attr name="bgBottomColor" />
         <attr name="xTextColor" />
-        <attr name="chartLineColor" />
+        <attr name="restLineColor" format="color"/>
+        <attr name="highColor" format="color"/>
+        <attr name="mediumColor" format="color"/>
+        <attr name="lowColor" format="color"/>
         <attr name="chartLineWidth" />
         <attr name="scaleNodeColor" />
         <attr name="gridColor" />

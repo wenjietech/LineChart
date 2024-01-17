@@ -31,7 +31,10 @@ public class CombineLineChart extends View {
     private int bgTopColor;
     private int bgBottomColor;
     private int xTextColor;
-    private int chartLineColor;
+    private int restLineColor;
+    private int highColor;
+    private int mediumColor;
+    private int lowColor;
     private float chartLineWidth = 10f;
 
     private int gridColor;
@@ -70,6 +73,7 @@ public class CombineLineChart extends View {
     private int interval = 0;
     private RectF rectF;
     private LinearGradient linearGradient;
+    private LinearGradient chartLineGradient;
     private LinearGradient linearGradientShadow;
     private Map<Integer, Pair<LinearGradient, Bitmap>> resMap;
     private int shadowWidth = dip2px(50);
@@ -107,7 +111,10 @@ public class CombineLineChart extends View {
         rightWith = ta.getDimension(R.styleable.CombineLineChart_rightWith, 8f);
         bottomWith = ta.getDimension(R.styleable.CombineLineChart_bottomWith, 16f);
         topWith = ta.getDimension(R.styleable.CombineLineChart_topWith, 8f);
-        chartLineColor = ta.getColor(R.styleable.CombineLineChart_chartLineColor, 0xff000000);
+        restLineColor = ta.getColor(R.styleable.CombineLineChart_restLineColor, 0xff000000);
+        highColor = ta.getColor(R.styleable.CombineLineChart_highColor, 0xff000000);
+        mediumColor = ta.getColor(R.styleable.CombineLineChart_mediumColor, 0xff000000);
+        lowColor = ta.getColor(R.styleable.CombineLineChart_lowColor, 0xff000000);
         chartLineWidth = ta.getDimension(R.styleable.CombineLineChart_chartLineWidth, 10f);
         showXAxis = ta.getBoolean(R.styleable.CombineLineChart_showXAxis, true);
         ta.recycle();
@@ -142,7 +149,7 @@ public class CombineLineChart extends View {
 
         chartLinePaint = new Paint();
         chartLinePaint.setStrokeWidth(chartLineWidth);
-        chartLinePaint.setColor(chartLineColor);
+//        chartLinePaint.setColor(restLineColor);
         chartLinePaint.setAntiAlias(true);
         chartLinePaint.setStyle(Paint.Style.STROKE);
 
@@ -170,7 +177,7 @@ public class CombineLineChart extends View {
         highlightIndexs.addAll(indexList);
         highlightColor = color;
 
-        if(mHeight > 0){
+        if (mHeight > 0) {
             linearGradient = new LinearGradient(0, 0, 0, mHeight - bottomWith, highlightColor, Color.TRANSPARENT, Shader.TileMode.CLAMP);
         }
         postInvalidate();
@@ -186,10 +193,12 @@ public class CombineLineChart extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        Log.d("ttttt", "onSizeChanged");
         mWith = w;
         mHeight = h;
 
+        chartLineGradient = new LinearGradient(0, topWith, 0, mHeight - bottomWith,
+                new int[]{highColor, mediumColor, lowColor},
+                new float[]{0f, 0.5f, 1f}, Shader.TileMode.CLAMP);
         linearGradient = new LinearGradient(0, 0, 0, mHeight - bottomWith, highlightColor, Color.TRANSPARENT, Shader.TileMode.CLAMP);
         linearGradientShadow = new LinearGradient(mWith - rightWith - shadowWidth, mHeight / 2f, mWith - rightWith, mHeight / 2f, Color.TRANSPARENT, Color.parseColor("#C0000000"), Shader.TileMode.CLAMP);
         unitHLenth = (mWith - leftWith - rightWith) / (list.size() - 1);
@@ -245,7 +254,6 @@ public class CombineLineChart extends View {
 
 
     private void drawLeft(Canvas canvas) {
-//        canvas.drawRect(0, 0, leftWith, mHeight, bgLeftPaint);
         gridPaint.setColor(gridColor);
         canvas.drawLine(leftWith, topWith, mWith - rightWith, topWith, gridPaint);
         canvas.drawLine(leftWith, mHeight - bottomWith, mWith - rightWith, mHeight - bottomWith, gridPaint);
@@ -348,9 +356,10 @@ public class CombineLineChart extends View {
                             fillPath.reset();
                         } else {
                             if (highlightIndexs.isEmpty()) {
-                                chartLinePaint.setColor(chartLineColor);
+                                chartLinePaint.setShader(chartLineGradient);
                             } else {
-                                chartLinePaint.setColor(chartLineColor & 0x80ffffff);
+                                chartLinePaint.setShader(null);
+                                chartLinePaint.setColor(restLineColor);
                             }
                         }
                         //draw chart line second, need to cover fill color
@@ -360,9 +369,11 @@ public class CombineLineChart extends View {
                             chartLinePaint.setColor(highlightColor);
                         } else {
                             if (highlightIndexs.isEmpty()) {
-                                chartLinePaint.setColor(chartLineColor);
+                                chartLinePaint.setShader(chartLineGradient);
+//                                chartLinePaint.setColor(chartLineColor);
                             } else {
-                                chartLinePaint.setColor(chartLineColor & 0x80ffffff);
+                                chartLinePaint.setShader(null);
+                                chartLinePaint.setColor(restLineColor);
                             }
                         }
                         canvas.drawPoint(x, y, chartLinePaint);
