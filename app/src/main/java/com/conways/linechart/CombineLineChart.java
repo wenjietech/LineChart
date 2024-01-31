@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -77,7 +78,7 @@ public class CombineLineChart extends View {
     private LinearGradient linearGradientShadow;
     private Map<Integer, Pair<LinearGradient, Bitmap>> resMap;
     private int shadowWidth = dip2px(50);
-
+    private DashPathEffect effect = new DashPathEffect(new float[]{dip2px(1), dip2px(5)}, 0);
 
     public CombineLineChart(Context context) {
         super(context);
@@ -152,6 +153,7 @@ public class CombineLineChart extends View {
 //        chartLinePaint.setColor(restLineColor);
         chartLinePaint.setAntiAlias(true);
         chartLinePaint.setStyle(Paint.Style.STROKE);
+        chartLinePaint.setStrokeCap(Paint.Cap.ROUND);
 
         chartLineFillPaint = new Paint();
 //        chartLineFillPaint.setColor(Color.GRAY);
@@ -390,6 +392,47 @@ public class CombineLineChart extends View {
             }*/
         }
 
+        int start = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getValue() > 0) {
+                start = i;
+                break;
+            }
+        }
+        int end = 0;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (list.get(i).getValue() > 0) {
+                end = i;
+                break;
+            }
+        }
+
+        int lastIndex = -1;
+        for (int i = start; i <= end; i++) {
+            current = list.get(i);
+            if (current.getValue() == 0) {
+                if (i > 0 && lastIndex == -1) {
+                    lastIndex = i - 1;
+                }
+            } else {
+                if (lastIndex != -1) {
+                    if (Math.abs(i - lastIndex) < 120 / (1440 / list.size())) {
+                        float x = (mWith - leftWith - rightWith) + leftWith - i * unitHLenth;
+                        float y = mHeight - bottomWith - current.getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
+
+                        float x1 = (mWith - leftWith - rightWith) + leftWith - lastIndex * unitHLenth;
+                        float y1 = mHeight - bottomWith - list.get(lastIndex).getValue() * (mHeight - topWith - bottomWith) / (xMax - xMin);
+
+                        chartLinePaint.setShader(null);
+                        chartLinePaint.setColor(Color.WHITE);
+                        chartLinePaint.setPathEffect(effect);
+                        canvas.drawLine(x, y, x1, y1, chartLinePaint);
+                        chartLinePaint.setPathEffect(null);
+                    }
+                    lastIndex = -1;
+                }
+            }
+        }
     }
 
     private int dip2px(float dpValue) {

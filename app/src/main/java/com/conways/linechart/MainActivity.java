@@ -2,6 +2,7 @@ package com.conways.linechart;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -102,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
         sleepLineChart.updateData(sleepModel);
 
 
-
         List<CandleChartModel> candleChartModelList = new ArrayList<>();
         for (int i = 0; i < 288; i++) {
             CandleChartModel chartModel = new CandleChartModel();
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void initCombineChart(){
+    private void initCombineChart() {
         CombineLineChart combineLineChart = (CombineLineChart) this.findViewById(R.id.combineChart);
         Button btnHigh = (Button) this.findViewById(R.id.btn_high);
         Button btnMed = (Button) this.findViewById(R.id.btn_med);
@@ -177,16 +177,23 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 96; i++) {
             CombineModel.Item item = new CombineModel.Item();
             item.setIndex(i);
-            if(i > 40 && i <60){
+
+            if (i > 40 && i < 50) {
                 item.setValue(0);
-                if(i == 50){
+                /*if(i == 50){
+                    item.setValue((int) (Math.random() * 100));
+                }*/
+            } else {
+                if (i < 5) {
+                    item.setValue(0);
+                } else if (i > 93) {
+                    item.setValue(0);
+                } else {
                     item.setValue((int) (Math.random() * 100));
                 }
-            }else{
-                item.setValue((int) (Math.random() * 100));
             }
             items.add(item);
-//            Log.e("rrrr", " i=" + i + " value=" + item.getValue());
+            Log.e("rrrr", " i=" + i + " value=" + item.getValue());
         }
 
         combineModel.setItems(items);
@@ -202,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 highlights.add(13);
                 highlights.add(43);
                 highlights.add(44);
-                highlights.add(50);
+//                highlights.add(50);
                 highlights.add(74);
                 highlights.add(75);
                 combineLineChart.updateHighlight(highlights, Color.WHITE);
