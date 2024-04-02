@@ -41,6 +41,12 @@
     <attr name="fillColorStart" format="color"/>
     <attr name="fillColorEnd" format="color"/>
 
+    <attr name="defaultLineColor" format="color"/>
+    <attr name="restLineColor" format="color"/>
+    <attr name="highColor" format="color"/>
+    <attr name="mediumColor" format="color"/>
+    <attr name="lowColor" format="color"/>
+
     <declare-styleable name="LineChart">
         <attr name="bgColor"/>
         <attr name="bgLeftColor"/>
@@ -176,10 +182,43 @@
         <attr name="bgTopColor" />
         <attr name="bgBottomColor" />
         <attr name="xTextColor" />
-        <attr name="restLineColor" format="color"/>
-        <attr name="highColor" format="color"/>
-        <attr name="mediumColor" format="color"/>
-        <attr name="lowColor" format="color"/>
+        <attr name="restLineColor"/>
+        <attr name="highColor"/>
+        <attr name="mediumColor"/>
+        <attr name="lowColor"/>
+        <attr name="chartLineWidth" />
+        <attr name="scaleNodeColor" />
+        <attr name="gridColor" />
+        <attr name="xMax" />
+        <attr name="xMin" />
+        <attr name="xTextSize" />
+        <attr name="leftWith" />
+        <attr name="rightWith" />
+        <attr name="bottomWith" />
+        <attr name="topWith" />
+        <attr name="scaleNodeRadius" />
+        <attr name="centerLineWidth" />
+        <attr name="centerLineColor" />
+        <attr name="fillColorStart"/>
+        <attr name="fillColorEnd"/>
+        <attr name="showXAxis"/>
+        <attr name="showSelectedIndicator"/>
+        <attr name="titleWidth"/>
+
+    </declare-styleable>
+
+    <declare-styleable name="HeartRateChart">
+        <attr name="bgColor"/>
+        <attr name="bgLeftColor"/>
+        <attr name="bgRightColor"/>
+        <attr name="bgTopColor" />
+        <attr name="bgBottomColor" />
+        <attr name="xTextColor" />
+        <attr name="defaultLineColor"/>
+        <attr name="restLineColor"/>
+        <attr name="highColor"/>
+        <attr name="mediumColor"/>
+        <attr name="lowColor"/>
         <attr name="chartLineWidth" />
         <attr name="scaleNodeColor" />
         <attr name="gridColor" />

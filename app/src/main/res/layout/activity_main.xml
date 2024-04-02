@@ -177,7 +177,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:bgBottomColor="#292929"
             app:bgColor="#292929"
             app:bgLeftColor="#292929"
@@ -213,7 +213,7 @@
             app:yTextSize="12sp" />
 
 
-        <com.conways.linechart.CombineLineChart
+        <com.conways.linechart.HeartRateChart
             android:id="@+id/combineChart"
             android:layout_width="match_parent"
             android:layout_height="250dp"
@@ -226,10 +226,11 @@
             app:bottomWith="30dp"
             app:chartLineWidth="2dp"
             app:gridColor="#80FFFFFF"
-            app:highColor="#FFF44336"
+            app:highColor="#ff7f96"
             app:leftWith="20dp"
-            app:lowColor="#FF2196F3"
-            app:mediumColor="#FF673AB7"
+            app:lowColor="#fc3559"
+            app:mediumColor="#fc3559"
+            app:defaultLineColor="#fc3559"
             app:restLineColor="#40FFFFFF"
             app:rightWith="20dp"
             app:topWith="50dp"

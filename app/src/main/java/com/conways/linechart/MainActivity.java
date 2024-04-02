@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
         tv = (TextView) this.findViewById(R.id.textView);
 
-        initCombineChart();
+//        initCombineChart();
+        initHeartRate();
 
 
         lineChart.setOnChartScrollChangedListener(new OnChartScrollChangedListener() {
@@ -238,6 +239,85 @@ public class MainActivity extends AppCompatActivity {
                 highlights.add(73);
                 highlights.add(74);
                 combineLineChart.updateHighlight(highlights, Color.parseColor("#FF009688"));
+            }
+        });
+    }
+
+    private void initHeartRate() {
+        HeartRateChart heartRateChart = (HeartRateChart) this.findViewById(R.id.combineChart);
+        Button btnHigh = (Button) this.findViewById(R.id.btn_high);
+        Button btnMed = (Button) this.findViewById(R.id.btn_med);
+        Button btnLow = (Button) this.findViewById(R.id.btn_low);
+        //For CombineLineChart
+        HeartRateModel heartRateModel = new HeartRateModel();
+        heartRateModel.setHigh(70);
+        heartRateModel.setMedium(30);
+
+        List<HeartRateModel.Item> items = new ArrayList<>();
+        for (int i = 0; i < 96; i++) {
+            HeartRateModel.Item item = new HeartRateModel.Item();
+            item.setIndex(i);
+
+            if (i > 40 && i < 50) {
+                item.setValue(0);
+                /*if(i == 50){
+                    item.setValue((int) (Math.random() * 100));
+                }*/
+            } else {
+                if (i < 5) {
+                    item.setValue(0);
+                } else if (i > 93) {
+                    item.setValue(0);
+                } else {
+                    item.setValue((int) (Math.random() * 100));
+                }
+            }
+            items.add(item);
+            Log.e("rrrr", " i=" + i + " value=" + item.getValue());
+        }
+
+        heartRateModel.setItems(items);
+        heartRateChart.updateData(heartRateModel);
+
+        btnHigh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Integer> highlights = new ArrayList<>();
+                highlights.add(10);
+                highlights.add(11);
+                highlights.add(12);
+                highlights.add(13);
+                highlights.add(43);
+                highlights.add(44);
+//                highlights.add(50);
+                highlights.add(74);
+                highlights.add(75);
+                heartRateChart.updateHighlight(highlights, Color.WHITE);
+            }
+        });
+        btnMed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Integer> highlights = new ArrayList<>();
+                highlights.add(20);
+                highlights.add(21);
+                highlights.add(22);
+                highlights.add(23);
+                highlights.add(53);
+                highlights.add(54);
+                heartRateChart.updateHighlight(highlights, Color.YELLOW);
+            }
+        });
+        btnLow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Integer> highlights = new ArrayList<>();
+                highlights.add(70);
+                highlights.add(71);
+                highlights.add(72);
+                highlights.add(73);
+                highlights.add(74);
+                heartRateChart.updateHighlight(highlights, Color.parseColor("#FF009688"));
             }
         });
     }
